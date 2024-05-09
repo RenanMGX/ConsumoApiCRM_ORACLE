@@ -114,9 +114,9 @@ class Credential:
         return self.criar_cifra(text, -key)
         
 if __name__ == "__main__":
+    exit()
     credential = Credential("XRM_API_PRD")
-    #bot = ApiXrm("INTEGRADOR_RPA", "J7~nkmk(6dk/f~gD", "https://fa-etyz-saasfaprod1.fa.ocs.oraclecloud.com/")
-    credential.save(user="INTEGRADOR_RPA",password="J7~nkmk(6dk/f~gD")
+    
     
     print(credential.load())
     
