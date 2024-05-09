@@ -79,31 +79,5 @@ if __name__ == "__main__":
     from dateutil.relativedelta import relativedelta
     date:datetime = datetime.now()
     
-    
     Incremental(date=date, pathFullBase=file_save_path_tickets).start().save(file_save_path_tickets_daily)
-    
-    
-    
-    
-    
-    # todaySTR:str = datetime.now().strftime("%Y-%m-%d")
-    
-    # try:
-    #     df_daily = pd.read_json(file_save_path_tickets_daily)
-    # except FileNotFoundError:
-    #     df_daily = pd.DataFrame()
-        
-    # df = pd.read_json(file_save_path_tickets)
-    # df = df[df['Data de Criação'] >= todaySTR]
-    # df["data_extracao"] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S+00:00')
-    
-    # df_final = pd.concat([df_daily, df], ignore_index=True)
-    
-    # df_final.to_json(file_save_path_tickets_daily, orient="records")
-    
-    # print(df_final)
-    
-    
-    
-    
     

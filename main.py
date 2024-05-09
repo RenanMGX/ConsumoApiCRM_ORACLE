@@ -42,14 +42,16 @@ class Extrat(ApiXrm):
                 limit: int = 500,
                 endpoint:Literal['tickets']|Literal['empreendimentos'] = "tickets", 
                 num_threads:int = 1, 
-                attemps:int = 5
+                #attemps:int = 5
                 ):
         
-        for _ in range(attemps):
+        threads_to_consume:int = 60
+        for _ in range(5):
             try:
-                self.df = pd.DataFrame(self.multi_request(offset=offset, pages=pages, limit=limit, endpoint=endpoint, num_threads=num_threads))
+                self.df = pd.DataFrame(self.multi_request(offset=offset, pages=pages, limit=limit, endpoint=endpoint, num_threads=threads_to_consume))
                 return self
             except Exception as erro:
+                threads_to_consume -= 10
                 error = erro
                 sleep(1)
         raise Exception("um erro ocorreu") from error # type: ignore
