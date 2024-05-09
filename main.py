@@ -7,6 +7,7 @@ from datetime import datetime
 import pandas as pd
 from getpass import getuser
 from time import sleep
+import os
 import traceback
 
 file_save_path_tickets:str = f"C:/Users/{getuser()}/PATRIMAR ENGENHARIA S A/RPA - Documentos/RPA - Dados/XRM - Relacionamento Com Cliente/json/all_tickets.json"
@@ -71,17 +72,25 @@ class Extrat(ApiXrm):
         return
 
 if __name__ == "__main__":
-    print("executado pelo main.py")
-    multiprocessing.freeze_support()
-    
-    crd:dict = Credential("XRM_API_PRD").load()
-    
-    api = Extrat(username=crd["user"], password=crd["password"], url="https://fa-etyz-saasfaprod1.fa.ocs.oraclecloud.com/")
-    #tickets.q_param = "TipoDeFormulario_c!=PER_SVR_FORM_VENDAS_2 or IS NULL;CreationDate>2024-05-03"
-    api.q_param = "TipoDeFormulario_c!=PER_SVR_FORM_VENDAS_2 or IS NULL"
-    
-    api.extrair(endpoint="tickets", num_threads=30).tratar_tickets().salvar(path=file_save_path_tickets)
+    try:
+        print("executado pelo main.py")
+        multiprocessing.freeze_support()
+        
+        crd:dict = Credential("XRM_API_PRD").load()
+        
+        api = Extrat(username=crd["user"], password=crd["password"], url="https://fa-etyz-saasfaprod1.fa.ocs.oraclecloud.com/")
+        #tickets.q_param = "TipoDeFormulario_c!=PER_SVR_FORM_VENDAS_2 or IS NULL;CreationDate>2024-05-03"
+        api.q_param = "TipoDeFormulario_c!=PER_SVR_FORM_VENDAS_2 or IS NULL"
+        
+        api.extrair(endpoint="tickets", num_threads=30).tratar_tickets().salvar(path=file_save_path_tickets)
 
-    api.extrair(endpoint="empreendimentos").salvar(path=file_save_path_empreendimentos)
+        api.extrair(endpoint="empreendimentos").salvar(path=file_save_path_empreendimentos)
+    except Exception:
+        path:str = "logs"
+        if not os.path.exists(path):
+            os.makedirs(path)
+        file:str = f"{path}/LogError_main_{datetime.now().strftime('%d%m%Y-%H%M%S')}_.txt"
+        with open(file, 'w', encoding='utf-8')as _file:
+            _file.write(traceback.format_exc())
 
     

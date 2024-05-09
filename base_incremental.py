@@ -5,6 +5,7 @@ from main import Extrat , file_save_path_tickets, calcular_tempo
 from datetime import datetime
 from copy import deepcopy
 from typing import Literal
+import traceback
 
 file_save_path_tickets_daily = f"C:/Users/{getuser()}/PATRIMAR ENGENHARIA S A/RPA - Documentos/RPA - Dados/XRM - Relacionamento Com Cliente/json/diary_tickets.json"
 
@@ -76,8 +77,15 @@ class Incremental(Extrat):
         
 
 if __name__ == "__main__":
-    from dateutil.relativedelta import relativedelta
-    date:datetime = datetime.now()
-    
-    Incremental(date=date, pathFullBase=file_save_path_tickets).start().save(file_save_path_tickets_daily)
+    try:
+        date:datetime = datetime.now()
+        
+        Incremental(date=date, pathFullBase=file_save_path_tickets).start().save(file_save_path_tickets_daily)
+    except Exception:
+        path:str = "logs"
+        if not os.path.exists(path):
+            os.makedirs(path)
+        file:str = f"{path}/LogError_base_incremental_{datetime.now().strftime('%d%m%Y-%H%M%S')}_.txt"
+        with open(file, 'w', encoding='utf-8')as _file:
+            _file.write(traceback.format_exc())
     
