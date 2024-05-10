@@ -46,8 +46,10 @@ class Extrat(ApiXrm):
                 #attemps:int = 5
                 ):
         
-        threads_to_consume:int = 60
-        for _ in range(5):
+        threads_to_consume:int = 30
+        for _ in range(3):
+            if threads_to_consume <= 0:
+                threads_to_consume = multiprocessing.cpu_count()
             try:
                 self.df = pd.DataFrame(self.multi_request(offset=offset, pages=pages, limit=limit, endpoint=endpoint, num_threads=threads_to_consume))
                 return self
