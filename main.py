@@ -85,12 +85,13 @@ if __name__ == "__main__":
         api.extrair(endpoint="tickets", num_threads=30).tratar_tickets().salvar(path=file_save_path_tickets)
 
         api.extrair(endpoint="empreendimentos").salvar(path=file_save_path_empreendimentos)
-    except Exception:
-        path:str = "logs"
+    except Exception as error:
+        path:str = "logs/"
         if not os.path.exists(path):
             os.makedirs(path)
-        file:str = f"{path}/LogError_main_{datetime.now().strftime('%d%m%Y-%H%M%S')}_.txt"
-        with open(file, 'w', encoding='utf-8')as _file:
+        file_name = path + f"LogError_{datetime.now().strftime('%d%m%Y%H%M%Y')}.txt"
+        with open(file_name, 'w', encoding='utf-8')as _file:
             _file.write(traceback.format_exc())
-
+        raise error
+            
     
