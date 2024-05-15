@@ -1,21 +1,21 @@
-import os
+#import os
 import pandas as pd
-from datetime import datetime
+#from datetime import datetime
 from time import sleep
-import multiprocessing
+#import multiprocessing
 from copy import deepcopy
 
 class RelatRelacionementoCliente:
     @staticmethod
     def tratar(df:pd.DataFrame) -> pd.DataFrame:
-        columns:list = ["SrNumber" , "QueueName" , "CategoryName" , "CategoriaDeAssunto_c" , "Title" , "ProblemDescription" , "StatusCdMeaning" , "NomeDoEmpreendimento_c" , "BusinessUnitName" , "ChannelTypeCdMeaning" , "EnviarPesquisa_c" , "PesquisaEnviada_c" , "Avaliacao_c",  "CreationDate" , "LastReopenDate" , "LastResolvedDate" , "DataDaUltimaAlteracaoDeStatus_c" , "LastUpdateDate" , "ResolvedBy" , "PrimaryContactPartyUniqueName" , "PrimaryContactEmailAddress" , "PrimaryContactFormattedPhoneNumber" , "TipoDeFormulario_c" , "DataDaVisita_c" , "CompareceuAVisita_c" , "AdquiriuPersonalizacao_c" , "AdquiriuModificacao_c" , "DataDaVistoria_c" , "StatusDaVistoria_c" , "DataDaRevistoria_c" , "StatusDaRevistoria_c" , "DataDeEntregaDasChaves_c" , "ChavesEntregues_c" , "HorarioDoAgendamento_c" , "Patologia_c" , "DataDaSolucao_c" , "Procedencia_c" , "TipoDeEntrada_c" , "MotivoDoPendente_c" , "Transbordo_c" , "Unidade_c"]
+        columns:list = ["SrNumber" , "QueueName" , "Categoria_c" , "CategoriaDeAssunto_c" , "Title" , "ProblemDescription" , "StatusCdMeaning" , "NomeDoEmpreendimento_c" , "BusinessUnitName" , "ChannelTypeCdMeaning" , "EnviarPesquisa_c" , "PesquisaEnviada_c" , "Avaliacao_c",  "CreationDate" , "LastReopenDate" , "LastResolvedDate" , "DataDaUltimaAlteracaoDeStatus_c" , "LastUpdateDate" , "ResolvedBy" , "PrimaryContactPartyUniqueName" , "PrimaryContactEmailAddress" , "PrimaryContactFormattedPhoneNumber" , "TipoDeFormulario_c" , "DataDaVisita_c" , "CompareceuAVisita_c" , "AdquiriuPersonalizacao_c" , "AdquiriuModificacao_c" , "DataDaVistoria_c" , "StatusDaVistoria_c" , "DataDaRevistoria_c" , "StatusDaRevistoria_c" , "DataDeEntregaDasChaves_c" , "ChavesEntregues_c" , "HorarioDoAgendamento_c" , "Patologia_c" , "DataDaSolucao_c" , "Procedencia_c" , "TipoDeEntrada_c" , "MotivoDoPendente_c" , "Transbordo_c" , "Unidade_c"]
         
         df = df[columns]
         
         df = df.rename(columns={
             "SrNumber" : "Número de Referência",
             "QueueName" : "Fila",
-            "CategoryName" : "Categoria",
+            "Categoria_c" : "Categoria",
             "CategoriaDeAssunto_c" : "Assunto",
             "Title" : "Título",
             "ProblemDescription" : "Descrição do Problema",
@@ -183,6 +183,16 @@ class RelatRelacionementoCliente:
             'PER_SVR_CATEGORIA_VIZINHO' : "VIZINHO",
             'PER_SVR_PESQUISANPS' : "PESQUISANPS"
         }   
+        categoria:dict = {
+            "LISTA_CATEGORIA_ADMIN" : "Administrativo",
+            "LISTA_CATEGORIA_ASSISTEC" : "Assistência Técnica",
+            "LISTA_CATEGORIA_COBRRECEB" : "COBRRECEB",
+            "LISTA_CATEGORIA_CONTRATOS" : "CONTRATOS",
+            "LISTA_CATEGORIA_EMPREENDIM" : "Empreendimento",
+            "LISTA_CATEGORIA_JURIDICO" : "JURIDICO",
+            "LISTA_CATEGORIA_RELACCLIENTE" : "Relacionamento com Cliente",
+        }
+        
         sim_nao:dict = {
             "SIM_NAO_N" : "Não",
             "SIM_NAO_S" : "Sim"
@@ -250,6 +260,7 @@ class RelatRelacionementoCliente:
         }
         
         df["Assunto"] = df["Assunto"].map(assunto)
+        df["Categoria"] = df["Categoria"].map(categoria)
         df["Enviar Pesquisa?"] = df["Enviar Pesquisa?"].map(sim_nao)
         df["Chaves Entregues"] = df["Chaves Entregues"].map(sim_nao)
         df["Adquiriu Modificação"] = df["Adquiriu Modificação"].map(sim_nao)

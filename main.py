@@ -47,17 +47,19 @@ class Extrat(ApiXrm):
                 ):
         
         threads_to_consume:int = 30
-        for _ in range(3):
+        error:Exception = Exception("não aconteceu erro mas gerou exceção - analize")
+        for _ in range(6):
             if threads_to_consume <= 0:
                 threads_to_consume = multiprocessing.cpu_count()
             try:
                 self.df = pd.DataFrame(self.multi_request(offset=offset, pages=pages, limit=limit, endpoint=endpoint, num_threads=threads_to_consume))
                 return self
             except Exception as erro:
-                threads_to_consume -= 10
+                threads_to_consume -= 5
                 error = erro
                 sleep(1)
-        raise Exception("um erro ocorreu") from error # type: ignore
+        
+        raise error
     
     @calcular_tempo
     def tratar_tickets(self):

@@ -114,8 +114,9 @@ class ApiXrm:
         return list_contents
 
 if __name__ == "__main__":
+    import pandas as pd
     print("executado pelo apiXrm.py")
-    exit()
+    #exit()
     multiprocessing.freeze_support()
     crd:dict = Credential("XRM_API_PRD").load()
     
@@ -123,7 +124,9 @@ if __name__ == "__main__":
     bot.q_param = "TipoDeFormulario_c!=PER_SVR_FORM_VENDAS_2 or IS NULL"
     
     agora = datetime.now()
-    bot.multi_request(endpoint="empreendimentos")
+    response:dict = bot.request(offset=0).json()
+    df = pd.DataFrame(response.get("items"))
+    df.to_excel("teste.xlsx", index=False)
     print(datetime.now() - agora)
     
         
