@@ -46,7 +46,7 @@ class Extrat(ApiXrm):
                 #attemps:int = 5
                 ):
         
-        threads_to_consume:int = 30
+        threads_to_consume:int = num_threads
         error:Exception = Exception("não aconteceu erro mas gerou exceção - analize")
         for _ in range(6):
             if threads_to_consume <= 0:
@@ -86,7 +86,7 @@ if __name__ == "__main__":
         #tickets.q_param = "TipoDeFormulario_c!=PER_SVR_FORM_VENDAS_2 or IS NULL;CreationDate>2024-05-03"
         api.q_param = "TipoDeFormulario_c!=PER_SVR_FORM_VENDAS_2 or IS NULL"
         
-        api.extrair(endpoint="tickets", num_threads=30).tratar_tickets().salvar(path=file_save_path_tickets)
+        api.extrair(endpoint="tickets", num_threads=40).tratar_tickets().salvar(path=file_save_path_tickets)
 
         api.extrair(endpoint="empreendimentos").salvar(path=file_save_path_empreendimentos)
     except Exception as error:

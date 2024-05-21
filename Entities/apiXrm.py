@@ -47,7 +47,12 @@ class ApiXrm:
         url:str = f"{self.url}{endpoint_url}?onlyData=true&limit={limit}&offset={offset}{self.q_param}"
         
         #print(url)
-        response = requests.request("GET", url,  auth=(self.__username, self.__password))
+        for _ in range(5):
+            response = requests.request("GET", url,  auth=(self.__username, self.__password))
+            if (response.status_code == 200) or (response.status_code != 504):
+                break
+            print((response.status_code, f"reiniciando {url}"))
+            sleep(1)
         #print(url)
         return response
     
@@ -80,12 +85,16 @@ class ApiXrm:
                     list_process.append(multiprocessing.Process(target=self._inner_request, args=(list_queue[num], offset, limit, endpoint)))
                     offset += 500
                     
-                    
+                print("inicio")    
                 for process in list_process:
+                    
+                    print(str(process), end="; ")
                     process.start()
                     
-                
+                print("\n\nFinalizou:")
                 for queue_response in list_queue:# type: ignore
+                    
+                    print(str(queue_response), end="; ")
                     queue_response:requests.models.Response = queue_response.get() # type: ignore
                     if queue_response.status_code == 200:
                         queue_json:dict = queue_response.json()
