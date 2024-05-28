@@ -71,7 +71,7 @@ class Incremental(Extrat):
         
         if self.df_final.empty:
             raise ValueError("Dataframe Vazio execute o modulo start primeiro")
-        self.df_final.to_json(path, orient=orient)
+        self.df_final.to_json(path, orient=orient, date_format='iso')
         self.df_final = pd.DataFrame()
         return
         

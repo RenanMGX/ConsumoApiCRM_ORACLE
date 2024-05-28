@@ -71,7 +71,7 @@ class Extrat(ApiXrm):
                orient:Literal['records']|Literal['index']|Literal['columns']|Literal['values']|Literal['table']|Literal['split']='records') -> None:
         if self.df.empty:
             raise ValueError("Dataframe Vazio execute o modulo extrair primeiro")
-        self.df.to_json(path, orient=orient)
+        self.df.to_json(path, orient=orient, date_format="iso")
         self.df = pd.DataFrame()
         return
 
