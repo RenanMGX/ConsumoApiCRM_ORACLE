@@ -8,7 +8,7 @@ from copy import deepcopy
 class RelatRelacionementoCliente:
     @staticmethod
     def tratar(df:pd.DataFrame) -> pd.DataFrame:
-        columns:list = ["SrNumber" , "QueueName" , "Categoria_c" , "CategoriaDeAssunto_c" , "Title" , "ProblemDescription" , "StatusCdMeaning" , "NomeDoEmpreendimento_c" , "BusinessUnitName" , "ChannelTypeCdMeaning" , "EnviarPesquisa_c" , "PesquisaEnviada_c" , "Avaliacao_c",  "CreationDate" , "LastReopenDate" , "LastResolvedDate" , "DataDaUltimaAlteracaoDeStatus_c" , "LastUpdateDate" , "ResolvedBy" , "PrimaryContactPartyUniqueName" , "PrimaryContactEmailAddress" , "PrimaryContactFormattedPhoneNumber" , "TipoDeFormulario_c" , "DataDaVisita_c" , "CompareceuAVisita_c" , "AdquiriuPersonalizacao_c" , "AdquiriuModificacao_c" , "DataDaVistoria_c" , "StatusDaVistoria_c" , "DataDaRevistoria_c" , "StatusDaRevistoria_c" , "DataDeEntregaDasChaves_c" , "ChavesEntregues_c" , "HorarioDoAgendamento_c" , "Patologia_c" , "DataDaSolucao_c" , "Procedencia_c" , "TipoDeEntrada_c" , "MotivoDoPendente_c" , "Transbordo_c" , "Unidade_c", "Causa_c", "SubCausaN1_c", "SubCausaN2_c"]
+        columns:list = ["SrNumber" , "QueueName" , "Categoria_c" , "CategoriaDeAssunto_c" , "Title" , "ProblemDescription" , "StatusCdMeaning" , "NomeDoEmpreendimento_c" , "BusinessUnitName" , "ChannelTypeCdMeaning" , "EnviarPesquisa_c" , "PesquisaEnviada_c" , "Avaliacao_c",  "CreationDate" , "LastReopenDate" , "LastResolvedDate" , "DataDaUltimaAlteracaoDeStatus_c" , "LastUpdateDate" , "ResolvedBy" , "PrimaryContactPartyUniqueName" , "PrimaryContactEmailAddress" , "PrimaryContactFormattedPhoneNumber" , "TipoDeFormulario_c" , "DataDaVisita_c" , "CompareceuAVisita_c" , "AdquiriuPersonalizacao_c" , "AdquiriuModificacao_c" , "DataDaVistoria_c" , "StatusDaVistoria_c" , "DataDaRevistoria_c" , "StatusDaRevistoria_c" , "DataDeEntregaDasChaves_c" , "ChavesEntregues_c" , "HorarioDoAgendamento_c" , "Patologia_c" , "DataDaSolucao_c" , "Procedencia_c" , "TipoDeEntrada_c" , "MotivoDoPendente_c" , "Transbordo_c" , "Unidade_c", "Causa_c", "SubCausaN1_c", "SubCausaN2_c", "Prazo_c"]
         
         df = df[columns]
         
@@ -56,7 +56,8 @@ class RelatRelacionementoCliente:
             "Unidade_c" : "Unidade_c",
             "Causa_c" : "Causa", 
             "SubCausaN1_c" : "SubCausaN1", 
-            "SubCausaN2_c" : "SubCausaN2"
+            "SubCausaN2_c" : "SubCausaN2",
+            "Prazo_c" : "Prazo"
             })
         
         for row,value in df.iterrows():

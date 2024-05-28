@@ -47,7 +47,7 @@ class ApiXrm:
         url:str = f"{self.url}{endpoint_url}?onlyData=true&limit={limit}&offset={offset}{self.q_param}"
         
         #print(url)
-        for _ in range(5):
+        for _ in range(3):
             response = requests.request("GET", url,  auth=(self.__username, self.__password))
             if (response.status_code == 200) or (response.status_code != 504):
                 break

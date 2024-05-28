@@ -48,7 +48,7 @@ class Extrat(ApiXrm):
         
         threads_to_consume:int = num_threads
         error:Exception = Exception("não aconteceu erro mas gerou exceção - analize")
-        for _ in range(6):
+        for _ in range(3):
             if threads_to_consume <= 0:
                 threads_to_consume = multiprocessing.cpu_count()
             try:
