@@ -137,7 +137,7 @@ class RelatRelacionementoCliente:
             'PER_SVR_CATEGORIA_CND' : "CND",
             'PER_SVR_CATEGORIA_CORREIOS' : "CORREIOS",
             'PER_SVR_CATEGORIA_ESPECIF' : "ESPECIF",
-            'PER_SVR_CATEGORIA_ESQALUM' : "ESQALUM",
+            'PER_SVR_CATEGORIA_ESQALUM' : "Esquadria de Alumínio",
             'PER_SVR_CATEGORIA_ESTOQUE' : "ESTOQUE",
             'PER_SVR_CATEGORIA_FORNECEDOR' : "FORNECEDOR",
             'PER_SVR_CATEGORIA_HABITESE' : "HABITESE",
@@ -160,7 +160,7 @@ class RelatRelacionementoCliente:
             'PER_SVR_CATEGORIA_MIDSOCIAIS' : "MIDSOCIAIS",
             'PER_SVR_CATEGORIA_MINUTACOMERC' : "MINUTACOMERC",
             'PER_SVR_CATEGORIA_NEGOCDIF' : "NEGOCDIF",
-            'PER_SVR_CATEGORIA_NOTIFEXTJUD' : "NOTIFEXTJUD",
+            'PER_SVR_CATEGORIA_NOTIFEXTJUD' : "Notificação extrajudicial",
             'PER_SVR_CATEGORIA_OUTORGAESCR' : "OUTORGAESCR",
             'PER_SVR_CATEGORIA_PAGVMD' : "PAGVMD",
             'PER_SVR_CATEGORIA_PERMUTA' : "PERMUTA",
@@ -211,7 +211,7 @@ class RelatRelacionementoCliente:
             "PER_SVR_FORM_VISTO" : "Vistoria"            
         }
         
-        status_vistoria:dict = {
+        status:dict = {
             "PER_SVR_STVISTORIA_APROV" : "Aprovado",
             "PER_SVR_STVISTORIA_REPROV" : "Reprovado", 
             "PER_SVR_STREVISTORIA_APROV" : "Aprovado",
@@ -252,7 +252,7 @@ class RelatRelacionementoCliente:
             "PER_SRV_PATOLOGIA_ESTRUTURAL" : "Estrutural",
             "PER_SRV_PATOLOGIA_FACHADA" : "Fachada",
             "PER_SRV_PATOLOGIA_HIDRO_A" : "Instalação Hidráulica",
-            "PER_SRV_PATOLOGIA_INSTELETMODU" : "INSTELETMODU",
+            "PER_SRV_PATOLOGIA_INSTELETMODU" : "Instalação Elétrica - Módulo",
             "PER_SRV_PATOLOGIA_INSTHIDTORN" : "Instalação Hidráulica - Torneira / Ducha / Acabamento",
             "PER_SRV_PATOLOGIA_INSTHIDFORRO" : "Instalação Hidráulica - Forros / Paredes / Lajes manchados",
             "PER_SRV_PATOLOGIA_INSTHIDENT" : "Instalação Hidráulica – Entupimento",
@@ -353,7 +353,7 @@ class RelatRelacionementoCliente:
         'DRENO_OBSTRUÍDO' : 'Dreno obstruído',
         'DRY_WALL' : 'Dry Wall',
         'EMPENO_DESALINHAMENTO' : 'EMPENO_DESALINHAMENTO', #####################
-        'ENC_SOL_CONT_CONSTRU_QUAND_CON' : 'ENC_SOL_CONT_CONSTRU_QUAND_CON', ###################
+        'ENC_SOL_CONT_CONSTRU_QUAND_CON' : 'Encerrado e solicitado contato com a construtora quando conveniente',
         'ENTUPIMENTO_DE_ELETRODUTOS' : 'Entupimento de eletrodutos',
         'ESPACO_INSU_MEDIDOR_AQUECEDOR' : 'Espaço insuficiente para medidor/Aquecedor',
         'ESPECIES_MORTAS_NAO_DESENV' : 'Espécies mortas/que não desenvolveram',
@@ -366,7 +366,7 @@ class RelatRelacionementoCliente:
         'FACHADA_PINTURA_TEXTURIZADA' : 'Fachada em Pintura texturizada',
         'FACHADA_REVESTIMENTO_CERÂMICO' : 'Fachada em revestimento cerâmico',
         'FALAHA_FALTA_INSTAL_MANTA_ACUS' : 'Falha ou falta de instalação da manta acústica',
-        'FALHASA_DOS_MATERIAIS' : 'FALHASA_DOS_MATERIAIS', ###################
+        'FALHASA_DOS_MATERIAIS' : 'Falha dos materiais',
         'FALHAS_ASSENTAMENTO' : 'Falhas no assentamento',
         'FALHAS_CONCRETAGEM' : 'Falhas de concretagem',
         'FALHAS_DE_FUNCIONAMENTO' : 'Falhas de funcionamento',
@@ -480,7 +480,7 @@ class RelatRelacionementoCliente:
         'RISCADO_MANCHADOS_TRINCADOS_LA' : 'Riscados/Manchados/Trincados/Lascados',
         'RISCOS_AMASSADOS_MANCHADOS_SUJ' : 'Riscos/Amassados/Manchados/Sujos',
         'RUIDO_DE_IMPACTO' : 'Ruído de impacto',
-        'SEM_CONTATO_COM_CLIENTE' : 'SEM_CONTATO_COM_CLIENTE', #####################
+        'SEM_CONTATO_COM_CLIENTE' : 'Sem contato com o cliente',
         'SERVICO_REALIZADO_DESC_PROJ' : 'Serviço realizado em desacordo com o projeto',
         'TAMPA_SOLTA_NAOINSTALADA_DANIF' : 'Tampa do shaft solta/Não instalada/Danificada',
         'TELHAS_MAL_COLOCADAS_FIXADAS' : 'Telhas mal colocadas/Fixadas',
@@ -581,8 +581,8 @@ class RelatRelacionementoCliente:
         df["Compareceu à Visita"] = df["Compareceu à Visita"].map(sim_nao, na_action='ignore')
         df["Transbordo"] = df["Transbordo"].map(sim_nao, na_action='ignore')
         df["Tipo de Formulário"] = df["Tipo de Formulário"].map(tipo_formulario, na_action='ignore')
-        df["Status da Vistoria"] = df["Status da Vistoria"].map(status_vistoria, na_action='ignore')
-        df["Status da Revistoria"] = df["Status da Revistoria"].map(status_vistoria, na_action='ignore')
+        df["Status da Vistoria"] = df["Status da Vistoria"].map(status, na_action='ignore')
+        df["Status da Revistoria"] = df["Status da Revistoria"].map(status, na_action='ignore')
         df["Tipo de Entrada"] = df["Tipo de Entrada"].map(tipo_entrada, na_action='ignore')
         df["Avaliação"] = df["Avaliação"].map(avaliacao, na_action='ignore')
         df["Procedência"] = df["Procedência"].map(procedencia, na_action='ignore')
