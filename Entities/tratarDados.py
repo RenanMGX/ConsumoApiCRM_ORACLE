@@ -79,7 +79,7 @@ class RelatRelacionementoCliente:
             'PER_SVR_CATEGORIA_PROJ' : "Projeto",
             'PER_SVR_CATEGORIA_REVINT' : "Revestimento Interno",
             'PER_SVR_CATEGORIA_INSTHIDR' : "Instalação Hidráulica",
-            'PER_SVR_CATEGORIA_FIDELIZAC' : "Fidelização",
+            'PER_SVR_CATEGORIA_FIDELIZAC' : "Boas Vindas",
             'PER_SVR_CATEGORIA_ESTRUTURAL' : "Estrutural",
             'PER_SVR_CATEGORIA_ESQMAD' : "Esquadria de Madeira",
             'PER_SVR_CATEGORIA_OUTROSASSUNT' : "Outros assuntos",
