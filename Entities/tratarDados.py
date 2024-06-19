@@ -4,11 +4,12 @@ import pandas as pd
 from time import sleep
 #import multiprocessing
 from copy import deepcopy
+import numpy as nb
 
 class RelatRelacionementoCliente:
     @staticmethod
     def tratar(df:pd.DataFrame) -> pd.DataFrame:
-        columns:list = ["SrNumber" , "QueueName" , "Categoria_c" , "CategoriaDeAssunto_c" , "Title" , "ProblemDescription" , "StatusCdMeaning" , "NomeDoEmpreendimento_c" , "BusinessUnitName" , "ChannelTypeCdMeaning" , "EnviarPesquisa_c" , "PesquisaEnviada_c" , "Avaliacao_c",  "CreationDate" , "LastReopenDate" , "LastResolvedDate" , "DataDaUltimaAlteracaoDeStatus_c" , "LastUpdateDate" , "ResolvedBy" , "PrimaryContactPartyUniqueName" , "PrimaryContactEmailAddress" , "PrimaryContactFormattedPhoneNumber" , "TipoDeFormulario_c" , "DataDaVisita_c" , "CompareceuAVisita_c" , "AdquiriuPersonalizacao_c" , "AdquiriuModificacao_c" , "DataDaVistoria_c" , "StatusDaVistoria_c" , "DataDaRevistoria_c" , "StatusDaRevistoria_c" , "DataDeEntregaDasChaves_c" , "ChavesEntregues_c" , "HorarioDoAgendamento_c" , "Patologia_c" , "DataDaSolucao_c" , "Procedencia_c" , "TipoDeEntrada_c" , "MotivoDoPendente_c" , "Transbordo_c" , "Unidade_c", "Causa_c", "SubCausaN1_c", "SubCausaN2_c", "Prazo_c"]
+        columns:list = ["SrNumber" , "QueueName" , "Categoria_c" , "CategoriaDeAssunto_c" , "Title" , "ProblemDescription" , "StatusCdMeaning" , "NomeDoEmpreendimento_c" , "BusinessUnitName" , "ChannelTypeCdMeaning" , "EnviarPesquisa_c" , "PesquisaEnviada_c" , "Avaliacao_c",  "CreationDate" , "LastReopenDate" , "LastResolvedDate" , "DataDaUltimaAlteracaoDeStatus_c" , "LastUpdateDate" , "ResolvedBy" , "PrimaryContactPartyUniqueName" , "PrimaryContactEmailAddress" , "PrimaryContactFormattedPhoneNumber" , "TipoDeFormulario_c" , "DataDaVisita_c" , "CompareceuAVisita_c" , "AdquiriuPersonalizacao_c" , "AdquiriuModificacao_c" , "DataDaVistoria_c" , "StatusDaVistoria_c" , "DataDaRevistoria_c" , "StatusDaRevistoria_c" , "DataDeEntregaDasChaves_c" , "ChavesEntregues_c" , "HorarioDoAgendamento_c" , "Patologia_c" , "DataDaSolucao_c" , "Procedencia_c" , "TipoDeEntrada_c" , "MotivoDoPendente_c" , "Transbordo_c" , "Unidade_c", "Causa_c", "SubCausaN1_c", "SubCausaN2_c", "Prazo_c", "TipoDeRegistro_c"]
         
         df = df[columns]
         
@@ -57,7 +58,8 @@ class RelatRelacionementoCliente:
             "Causa_c" : "Causa", 
             "SubCausaN1_c" : "SubCausaN1", 
             "SubCausaN2_c" : "SubCausaN2",
-            "Prazo_c" : "Prazo"
+            "Prazo_c" : "Prazo",
+            "TipoDeRegistro_c": "Tipo De Registro"
             })
         
         for row,value in df.iterrows():
@@ -571,6 +573,16 @@ class RelatRelacionementoCliente:
         'VAZAMANTO_INTUPIMENTO_VAV_REG_' : 'Vazamanto/Entupimento em válvula/Registros/torneiras'
         }      
         
+        tipoRegistro:dict = {
+            "PER_SVR_REGI_SOLICITA" : "Solicitação",
+            "PER_SVR_REGI_RECLAMA" : "Reclamação",
+            "PER_SVR_REGI_DUVIDA" : "Duvida",
+            "PER_SVR_REGI_OFERTA" : "Oferta",
+            "PER_SVR_REGI_DEMANDA" : "Demanda Interna",
+            "PER_SVR_REGI_INFO" : "Informação",
+            "PER_SVR_REGI_SUGEST" : "Sugestão",
+            "PER_SVR_REGI_ELOGIO" : "Elogio"            
+        }
         
         df["Assunto"] = df["Assunto"].map(assunto, na_action='ignore')
         df["Categoria"] = df["Categoria"].map(categoria, na_action='ignore')
@@ -590,6 +602,8 @@ class RelatRelacionementoCliente:
         df["Causa"] = df["Causa"].map(causa, na_action='ignore')
         df["SubCausaN1"] = df["SubCausaN1"].map(sub_causa_n1, na_action='ignore')
         df["SubCausaN2"] = df["SubCausaN2"].map(sub_causa_n2, na_action='ignore')
+        df["Tipo De Registro"] = df["Tipo De Registro"].map(tipoRegistro, na_action='ignore').replace(nb.nan, "Não Preenchido")
+        
         
         return df
 
