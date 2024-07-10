@@ -4,9 +4,11 @@ from copy import deepcopy
 #import traceback
 from random import randint
 from getpass import getuser
+from typing import Literal
 
 class Credential:
-    def __init__(self, name:str, path:str=f"C:/Users/{getuser()}/.patrimar_rpa/credenciais/") -> None:
+    def __init__(self, name_file:Literal["XRM_API_PRD"], path:str=f"C:/Users/{getuser()}/.patrimar_rpa/credenciais/") -> None:
+        name = name_file
         if not isinstance(path, str):
             raise TypeError("apenas strings")
         if not isinstance(name, str):

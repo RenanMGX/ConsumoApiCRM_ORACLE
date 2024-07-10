@@ -285,7 +285,7 @@ class RelatRelacionementoCliente:
         'ESTRUTURA_CONCRETO' : 'Estruturas de Concreto',
         'INSTALACAO_ELETRICA' : 'Instalação Elétrica',
         'REJUNTES' : 'Rejuntes',
-        'IMCOMPATIBILIDADE_AGENDAMENTO' : 'Icompatibilidade de agendamento',
+        'IMCOMPATIBILIDADE_AGENDAMENTO' : 'Incompatibilidade de Agendamento',
         'PISO_LAMINADO' : 'Piso Laminado',
         'VIDROS' : 'Vidros',
         'ESTRUTURAS_GESSO' : 'Estruturas de Gesso',

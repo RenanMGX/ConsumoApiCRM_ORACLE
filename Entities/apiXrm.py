@@ -6,6 +6,7 @@ from time import sleep
 from typing import List, Dict, Literal
 from datetime import datetime
 from crenciais import Credential
+import json
 
 #https://fa-etyz-saasfaprod1.fa.ocs.oraclecloud.com/crmRestApi/resources/11.13.18.05/serviceRequests?offset={offset}&limit=500&q=TipoDeFormulario_c!=PER_SVR_FORM_VENDAS_2 or IS NULL"
 class ApiXrm:
@@ -24,7 +25,7 @@ class ApiXrm:
             value = "&q=" + value
         self.__q_param = value
     
-    def __init__(self, *, username:str, password:str, url:str) -> None:
+    def __init__(self, *, username:str, password:str, url:str="https://fa-etyz-saasfaprod1.fa.ocs.oraclecloud.com/") -> None:
         self.__username:str = username
         self.__password:str = password
         if url.endswith("/"):
@@ -33,16 +34,28 @@ class ApiXrm:
         
         self.__q_param:str = ""
         
+    def alter(self, *, endpoint:str, new_values:dict):
+        headersList = {
+        "Content-Type": "application/json" 
+        }       
         
-    def request(self, *, offset:int, limit:int=500, endpoint:Literal["tickets"]|Literal['empreendimentos'] = "tickets"):
+        payload = json.dumps(new_values)
+        
+        response = requests.request("PATCH", endpoint, data=payload, headers=headersList, auth=(self.__username, self.__password))
+        if response.status_code == 200:        
+            return response.reason
+        else:
+            raise Exception(f"erro ao consumir api\n{' '*11}{response.status_code=}\n{' '*11}{response.reason=}\n{' '*11}{response.text=}")
+        
+        
+    def request(self, *, offset:int, limit:int=500, endpoint:Literal["tickets", "empreendimentos"] = "tickets"):
         endpoint_url:str
         if endpoint == "tickets":
             endpoint_url = "/crmRestApi/resources/11.13.18.05/serviceRequests"
         elif endpoint == "empreendimentos":
             endpoint_url = "/crmRestApi/resources/11.13.18.05/Empreendimento_c"
             self.q_param = ""
-        else:
-            raise ModuleNotFoundError("Endpoint não é reconhecido")
+
         
         url:str = f"{self.url}{endpoint_url}?onlyData=true&limit={limit}&offset={offset}{self.q_param}"
         
