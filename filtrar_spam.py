@@ -99,7 +99,10 @@ if __name__ == "__main__":
 
     for id in filter.spam('List_ids'):
         endpoint = f"https://fa-etyz-saasfaprod1.fa.ocs.oraclecloud.com//crmRestApi/resources/11.13.18.05/serviceRequests/{id}"
-        api.alter(endpoint=endpoint)
+        try:
+            api.alter(endpoint=endpoint)
+        except Exception as error:
+            print(error)
 
     print(f"{datetime.now() - agora}")
     #print(api.alter(endpoint=))
