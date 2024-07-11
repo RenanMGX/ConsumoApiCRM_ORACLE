@@ -8,6 +8,8 @@ from Entities.apiXrm import ApiXrm
 from Entities.crenciais import Credential
 import multiprocessing
 from datetime import datetime
+from copy import deepcopy
+import traceback
 
 class SpamFilter:
     @property
@@ -16,8 +18,17 @@ class SpamFilter:
     
     @property
     def df(self) -> pd.DataFrame:
-        df = self.__df[self.__df['Fila'] != 'Spam']
+        df = self.__df
+        df = df[df['Status'] != "Fechado"]
+        df = df[df['Fila'] != 'Spam']
         return df
+    
+    @property
+    def historico(self) -> pd.DataFrame:
+        try:
+            return self.__historico
+        except AttributeError:
+            raise AttributeError("é preciso executar o metodo SpamFilter.spam() primeiro para que possa gerar um historico")
     
     @property
     def spam_keywords(self) -> list:
@@ -68,12 +79,15 @@ class SpamFilter:
                 result[row] = False
         return pd.Series(result)
     
+    
     def spam(self, retorno:Literal['DataFrame', 'List_ids']) -> pd.DataFrame|list:
-        df_spam = self.df[self.__tratar_spam(self.df)]
+        df_spam = deepcopy(self.df[self.__tratar_spam(self.df)])
+        self.__historico:pd.DataFrame = deepcopy(df_spam[['Número de Referência', 'Fila', 'Status']])
         if retorno == 'DataFrame':
             return df_spam
         elif retorno == 'List_ids':
             return df_spam['Número de Referência'].tolist()
+        
         
 class AlterTickets(ApiXrm):
     def __init__(self) -> None:
@@ -92,17 +106,40 @@ class AlterTickets(ApiXrm):
         
         
 if __name__ == "__main__":
-    agora = datetime.now()
-    multiprocessing.freeze_support()
-    filter = SpamFilter(file_save_path_tickets)
-    api = AlterTickets()
+    try:
+        agora = datetime.now()
+        multiprocessing.freeze_support()
+        filter = SpamFilter(file_save_path_tickets)
+        api = AlterTickets()
 
-    for id in filter.spam('List_ids'):
-        endpoint = f"https://fa-etyz-saasfaprod1.fa.ocs.oraclecloud.com//crmRestApi/resources/11.13.18.05/serviceRequests/{id}"
-        try:
-            api.alter(endpoint=endpoint)
-        except Exception as error:
-            print(error)
+        lista_ids = filter.spam('List_ids')
+        historico:pd.DataFrame = filter.historico
+        historico["processou"] = False
+        for id in lista_ids:
+            endpoint = f"https://fa-etyz-saasfaprod1.fa.ocs.oraclecloud.com//crmRestApi/resources/11.13.18.05/serviceRequests/{id}"
+            row = historico[historico['Número de Referência'] == id].index[0]
+            try:
+                result = api.alter(endpoint=endpoint)
+                print(result)
+                historico.loc[row, 'processou'] = True
+            except Exception as error:
+                print(id,error)
 
-    print(f"{datetime.now() - agora}")
-    #print(api.alter(endpoint=))
+        path_registros:str = os.path.join(os.getcwd(), 'Registros')
+        if not os.path.exists(path_registros):
+            os.makedirs(path_registros)
+        
+        name_file_registro:str = os.path.join(path_registros, datetime.now().strftime('Registro_alteração_filas-%d%m%Y-%H%M%S.xlsx'))
+        historico_for_save = historico[historico['processou'] == True]
+        if not historico_for_save.empty:
+            historico_for_save.to_excel(name_file_registro, index=False)
+        
+        print(f"{datetime.now() - agora}")
+        
+    except:
+        logs_path:str = os.path.join(os.getcwd(), 'Logs')
+        if not os.path.exists(logs_path):
+            os.makedirs(logs_path)
+        log_file:str = os.path.join(logs_path, datetime.now().strftime("LogError-%d%m%Y-%H%M%S.xlsx"))
+        with open(log_file, 'w', encoding='utf-8')as _file:
+            _file.write(traceback.format_exc())
