@@ -60,14 +60,18 @@ class ApiXrm:
         url:str = f"{self.url}{endpoint_url}?onlyData=true&limit={limit}&offset={offset}{self.q_param}"
         
         #print(url)
-        for _ in range(3):
-            response = requests.request("GET", url,  auth=(self.__username, self.__password))
-            if (response.status_code == 200) or (response.status_code != 504):
-                break
-            print((response.status_code, f"reiniciando {url}"))
-            sleep(1)
+        erro = ""
+        for _ in range(6):
+            try:
+                response = requests.request("GET", url,  auth=(self.__username, self.__password))
+                if (response.status_code == 200) or (response.status_code != 504):
+                    return response
+                print((response.status_code, f"reiniciando {url}"))
+            except Exception as error:
+                erro = error
+                sleep(1)
         #print(url)
-        return response
+        raise Exception(f"não foi possivel consumir api\n{response.status_code=}\n{response.reason}\n{erro=}")
     
     def _inner_request(self, queue:multiprocessing.Queue, offset:int, limit:int=500, endpoint:Literal["tickets"]|Literal['empreendimentos'] = "tickets"):
         response = self.request(offset=offset, limit=limit, endpoint=endpoint)
