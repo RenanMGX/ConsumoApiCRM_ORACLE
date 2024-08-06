@@ -233,7 +233,8 @@ class RelatRelacionementoCliente:
         procedencia:dict = {
             "PER_SRV_PROCED_IMPROCED" : "Improcedente",
             "PER_SRV_PROCED_PROCED" : "Procedente",
-            "PER_SRV_PROCED_SACSAT" : "SAC/SAT"
+            "PER_SRV_PROCED_SACSAT" : "SAC/SAT",
+            "PER_SRV_PROCED_IMPROCEDREACORT" : "Improcedente Realizado em Cortesia",
         }
         
         avaliacao:dict = {
@@ -260,12 +261,18 @@ class RelatRelacionementoCliente:
             "PER_SRV_PATOLOGIA_INSTHIDENT" : "Instalação Hidráulica – Entupimento",
             "PER_SRV_PATOLOGIA_INSTELETQUAD" : "Instalação Elétrica – Quadro",
             "PER_SRV_PATOLOGIA_INSTHIDLOUCA" : "Instalação Hidráulica - Louça / Bojo / Tanque / Caixa acoplada / Vaso sanitário",
-            "PER_SRV_PATOLOGIA_INSTTELECOM" : "Instalação Telecomunicações",
+            "PER_SRV_PATOLOGIA_INSTTELECOM" : "Instalação Telecomunicação / SPDA",
             "PER_SRV_PATOLOGIA_PISO" : "Piso de Madeira / Laminado / Vinílico",
             "PER_SRV_PATOLOGIA_REFORMAAVUL" : "REFORMAAVUL",    
             "PER_SRV_PATOLOGIA_REVEST" : "Revestimento Interno",
             "PER_SRV_PATOLOGIA_REVESTEXT" : "Revestimento Externo - Exceto fachada",   
-            "PER_SRV_PATOLOGIA_TELHADO" : "Telhado"            
+            "PER_SRV_PATOLOGIA_TELHADO" : "Telhado",
+            "PER_SRV_PATOLOGIA_INSTINCE" : "Instalação de Incêndio",
+            "PER_SRV_PATOLOGIA_VIDROS" : "Vidros",
+            "PER_SRV_PATOLOGIA_INSTELETRO" : "Instalação Eletroeletrônicos - Portões/Controle de Acesso/Cêmeras/Fechadura, etc",
+            "PER_SRV_PATOLOGIA_ENXOVAL" : "Enxoval",
+            "PER_SRV_PATOLOGIA_PINTURA" : "Pintura",
+            "PER_SRV_PATOLOGIA_LIMPEZA" : "Limpeza"                 
         }
         
         
