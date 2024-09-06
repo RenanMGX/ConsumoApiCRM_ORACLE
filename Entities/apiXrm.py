@@ -105,7 +105,7 @@ class ApiXrm:
                 print("inicio")    
                 for process in list_process:
                     
-                    print(str(process), end="; ")
+                    print(str(process.name), end="; ")
                     process.start()
                     
                 print("\n\nFinalizou:")
