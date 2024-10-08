@@ -1,44 +1,58 @@
 import json
 import os
 from copy import deepcopy
-#import traceback
+import traceback
 from random import randint
 from getpass import getuser
-from typing import Literal
+from typing import Literal, Dict
+import asyncio
+
+class CredentialFileNotFoundError(Exception):
+    def __init__(self, *args: object) -> None:
+        super().__init__(*args)
 
 class Credential:
-    def __init__(self, name_file:Literal["XRM_API_PRD"], path:str=f"C:\\Users\\{getuser()}\\PATRIMAR ENGENHARIA S A\\RPA - Documentos\\RPA - Dados\\CRD\\.patrimar_rpa\\credenciais\\") -> None:
-        name = name_file
-        if not isinstance(path, str):
+    path_raiz:str=f"C:\\Users\\{getuser()}\\PATRIMAR ENGENHARIA S A\\RPA - Documentos\\RPA - Dados\\CRD\\.patrimar_rpa\\credenciais\\"
+    
+    @property
+    def path(self):
+        return self.__path
+    
+    def __init__(self, name_file:Literal["SAP_QAS-Renan", "SAP_QAS"]|str, ) -> None:
+        name:str = str(name_file)
+        if not isinstance(Credential.path_raiz, str):
             raise TypeError("apenas strings")
         if not isinstance(name, str):
             raise TypeError("apenas strings")
         if not name.endswith('.json'):
             name += '.json'
-        
-        
-        
-        temp_path:str
-        if "\\" in path:
-            if not path.endswith("\\"):
-                path += "\\"
-            temp_path = "\\".join(path.split("\\")[0:-1]) + "\\"
-            if not os.path.exists(temp_path):
-                os.makedirs(temp_path)
-        
-        if "/" in path:
-            if not path.endswith("/"):
-                path += "/"
-            temp_path = "/".join(path.split("/")[0:-1]) + "/"
-            if not os.path.exists(temp_path):
-                os.makedirs(temp_path)
                 
-        self.__path = path + name
+        self.__path = os.path.join(Credential.path_raiz, name)
+        
+        if not os.path.exists(self.path):
+            raise CredentialFileNotFoundError(f"'{self.path=}' não foi encontrado!")
     
-    @property
-    def path(self):
-        return self.__path
-            
+    @staticmethod
+    def create(name_file:str):
+        if not name_file.endswith('.json'):
+            name_file += ".json"
+        
+        if not os.path.exists(Credential.path_raiz):
+            try:
+                os.makedirs(Credential.path_raiz)
+            except:
+                raise Exception(f"{Credential.path_raiz=} não foi possivel ser criado!")
+        
+        combined_file:str = os.path.join(Credential.path_raiz, name_file)
+        
+        if not os.path.exists(combined_file):
+            with open(combined_file, 'w')as _file:
+                json.dump({"key": 0},_file)
+            print(f"{name_file=} foi criado!")
+        else:
+            print(f"{name_file=} ja existe!")
+        
+        
         
     def load(self) -> dict:
         """crie / ler um arquivo json contendo as credenciais
@@ -53,9 +67,6 @@ class Credential:
             dict: dicionario com a credenciais salvas
         """
         
-        if not os.path.exists(self.path):
-            with open(self.path, 'w')as _file:
-                json.dump({"user": "", "password": "", "key": 0},_file)
             #raise FileNotFoundError(f"{self.path=} não existe! então foi criar uma no repositorio, edite as credenciais e execute o codigo novamente!")
 
         with open(self.path, 'r')as _file:
@@ -70,15 +81,15 @@ class Credential:
         return new_result
                             
     
-    def save(self, *, user:str, password:str) -> None:
-        key = randint(500,6000)
+    def save(self, **kargs) -> None:
+        token = randint(500,6000)
+        
+        words:Dict[str,object] = {key:self.criar_cifra(value, token) for key,value in kargs.items()}
+        words['key'] = token
+        
         with open(self.path, 'w')as _file:
             json.dump(
-                {
-                    'user':self.criar_cifra(user, key),
-                    'password':self.criar_cifra(password, key),
-                    'key': key
-                },
+                words,
                 _file)
     
     def criar_cifra(self, text:str, key:int=1, response_json:bool=False) -> str:
@@ -116,10 +127,8 @@ class Credential:
         return self.criar_cifra(text, -key)
         
 if __name__ == "__main__":
-    exit()
-    credential = Credential("XRM_API_PRD")
+    crd = Credential('XRM_API_PRD')
     
+    crd.save(user='INTEGRADOR_RPA', password='J7~nkmk(6dk/f~gD', url='https://fa-etyz-saasfaprod1.fa.ocs.oraclecloud.com/')
     
-    print(credential.load())
-    
-    
+    print(crd.load())

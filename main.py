@@ -1,17 +1,16 @@
 from typing import Literal
 from Entities.apiXrm import ApiXrm
 from Entities.tratarDados import RelatRelacionementoCliente
-from Entities.crenciais import Credential
+from Entities.dependencies.config import Config
+from Entities.dependencies.credenciais import Credential
+from Entities.dependencies.logs import Logs, traceback
 import multiprocessing
 from datetime import datetime
 import pandas as pd
-from getpass import getuser
 from time import sleep
-import os
-import traceback
 
-file_save_path_tickets:str = f"C:/Users/{getuser()}/PATRIMAR ENGENHARIA S A/RPA - Documentos/RPA - Dados/XRM - Relacionamento Com Cliente/json/all_tickets.json"
-file_save_path_empreendimentos:str = f"C:/Users/{getuser()}/PATRIMAR ENGENHARIA S A/RPA - Documentos/RPA - Dados/XRM - Relacionamento Com Cliente/json/empreendimentos.json"
+#file_save_path_tickets:str = 
+#file_save_path_empreendimentos:str = 
 
 def calcular_tempo(f):
     def wrap(*args, **kwargs):
@@ -80,22 +79,18 @@ if __name__ == "__main__":
         print("executado pelo main.py")
         multiprocessing.freeze_support()
         
-        crd:dict = Credential("XRM_API_PRD").load()
+        crd:dict = Credential(Config()['credential']['crd']).load()
         
-        api = Extrat(username=crd["user"], password=crd["password"], url="https://fa-etyz-saasfaprod1.fa.ocs.oraclecloud.com/")
+        api = Extrat(username=crd["user"], password=crd["password"], url=crd["url"])
         #tickets.q_param = "TipoDeFormulario_c!=PER_SVR_FORM_VENDAS_2 or IS NULL;CreationDate>2024-05-03"
         api.q_param = "TipoDeFormulario_c!=PER_SVR_FORM_VENDAS_2 or IS NULL"
         
-        api.extrair(endpoint="tickets", num_threads=40).tratar_tickets().salvar(path=file_save_path_tickets)
+        api.extrair(endpoint="tickets", num_threads=40).tratar_tickets().salvar(path=Config()['paths']['file_save_path_tickets'])
 
-        api.extrair(endpoint="empreendimentos").salvar(path=file_save_path_empreendimentos)
-    except Exception as error:
-        path:str = "logs/"
-        if not os.path.exists(path):
-            os.makedirs(path)
-        file_name = path + f"LogError_{datetime.now().strftime('%d%m%Y%H%M%Y')}.txt"
-        with open(file_name, 'w', encoding='utf-8')as _file:
-            _file.write(traceback.format_exc())
-        raise error
+        api.extrair(endpoint="empreendimentos").salvar(path=Config()['paths']['file_save_path_empreendimentos'])
+        
+        Logs().register(status='Concluido', description="Extração de dados do CRM Concluido!")
+    except Exception as err:
+        Logs().register(status='Error', description=str(err), exception=traceback.format_exc())
             
     

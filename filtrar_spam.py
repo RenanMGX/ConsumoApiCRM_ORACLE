@@ -1,15 +1,17 @@
 import pandas as pd
 import os
+import sys
 import re
 from getpass import getuser
-from main import file_save_path_tickets
+#from main import file_save_path_tickets
 from typing import Literal
 from Entities.apiXrm import ApiXrm
-from Entities.crenciais import Credential
+from Entities.dependencies.credenciais import Credential
+from Entities.dependencies.logs import Logs, traceback
+from Entities.dependencies.config import Config
 import multiprocessing
 from datetime import datetime
 from copy import deepcopy
-import traceback
 
 class SpamFilter:
     @property
@@ -91,8 +93,8 @@ class SpamFilter:
         
 class AlterTickets(ApiXrm):
     def __init__(self) -> None:
-        crd = Credential('XRM_API_PRD').load()
-        super().__init__(username=crd['user'], password=crd['password'])
+        crd = Credential(Config()['credential']['crd']).load()
+        super().__init__(username=crd['user'], password=crd['password'], url=crd["url"])
         
     def alter(self, *, endpoint: str):
         new_values = {
@@ -107,16 +109,17 @@ class AlterTickets(ApiXrm):
         
 if __name__ == "__main__":
     try:
+        crd = Credential(Config()['credential']['crd']).load()
         agora = datetime.now()
         multiprocessing.freeze_support()
-        filter = SpamFilter(file_save_path_tickets)
+        filter = SpamFilter(Config()['paths']['file_save_path_tickets'])
         api = AlterTickets()
 
         lista_ids = filter.spam('List_ids')
         historico:pd.DataFrame = filter.historico
         historico["processou"] = False
         for id in lista_ids:
-            endpoint = f"https://fa-etyz-saasfaprod1.fa.ocs.oraclecloud.com//crmRestApi/resources/11.13.18.05/serviceRequests/{id}"
+            endpoint = f"{crd["url"]}crmRestApi/resources/11.13.18.05/serviceRequests/{id}"
             row = historico[historico['Número de Referência'] == id].index[0]
             try:
                 result = api.alter(endpoint=endpoint)
@@ -133,13 +136,11 @@ if __name__ == "__main__":
         historico_for_save = historico[historico['processou'] == True]
         if not historico_for_save.empty:
             historico_for_save.to_excel(name_file_registro, index=False)
-        
+            lista_movidos:list = historico_for_save['Número de Referência'].tolist()
+            Logs().register(status='Concluido', description=f"lista dos chamados que foram movidos para Spam {str(lista_movidos)}")
+            sys.exit()
+        Logs().register(status='Concluido', description=f"Automação Concluida mas sem chamados movidos para o Spam")
         print(f"{datetime.now() - agora}")
         
-    except:
-        logs_path:str = os.path.join(os.getcwd(), 'Logs')
-        if not os.path.exists(logs_path):
-            os.makedirs(logs_path)
-        log_file:str = os.path.join(logs_path, datetime.now().strftime("LogError-%d%m%Y-%H%M%S.xlsx"))
-        with open(log_file, 'w', encoding='utf-8')as _file:
-            _file.write(traceback.format_exc())
+    except Exception as err:
+        Logs().register(status='Error', description=str(err), exception=traceback.format_exc())

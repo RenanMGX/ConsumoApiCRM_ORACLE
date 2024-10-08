@@ -5,7 +5,6 @@ import multiprocessing
 from time import sleep
 from typing import List, Dict, Literal
 from datetime import datetime
-from crenciais import Credential
 import json
 
 #https://fa-etyz-saasfaprod1.fa.ocs.oraclecloud.com/crmRestApi/resources/11.13.18.05/serviceRequests?offset={offset}&limit=500&q=TipoDeFormulario_c!=PER_SVR_FORM_VENDAS_2 or IS NULL"
@@ -25,7 +24,7 @@ class ApiXrm:
             value = "&q=" + value
         self.__q_param = value
     
-    def __init__(self, *, username:str, password:str, url:str="https://fa-etyz-saasfaprod1.fa.ocs.oraclecloud.com/") -> None:
+    def __init__(self, *, username:str, password:str, url:str) -> None:
         self.__username:str = username
         self.__password:str = password
         if url.endswith("/"):
@@ -140,19 +139,20 @@ class ApiXrm:
         return list_contents
 
 if __name__ == "__main__":
-    import pandas as pd
-    print("executado pelo apiXrm.py")
-    #exit()
-    multiprocessing.freeze_support()
-    crd:dict = Credential("XRM_API_PRD").load()
+    pass
+    # import pandas as pd
+    # print("executado pelo apiXrm.py")
+    # #exit()
+    # multiprocessing.freeze_support()
+    # crd:dict = Credential("XRM_API_PRD").load()
     
-    bot = ApiXrm(username=crd["user"], password=crd["password"], url="https://fa-etyz-saasfaprod1.fa.ocs.oraclecloud.com/")
-    bot.q_param = "TipoDeFormulario_c!=PER_SVR_FORM_VENDAS_2 or IS NULL"
+    # bot = ApiXrm(username=crd["user"], password=crd["password"], url="https://fa-etyz-saasfaprod1.fa.ocs.oraclecloud.com/")
+    # bot.q_param = "TipoDeFormulario_c!=PER_SVR_FORM_VENDAS_2 or IS NULL"
     
-    agora = datetime.now()
-    response:dict = bot.request(offset=0).json()
-    df = pd.DataFrame(response.get("items"))
-    df.to_excel("teste.xlsx", index=False)
-    print(datetime.now() - agora)
+    # agora = datetime.now()
+    # response:dict = bot.request(offset=0).json()
+    # df = pd.DataFrame(response.get("items"))
+    # df.to_excel("teste.xlsx", index=False)
+    # print(datetime.now() - agora)
     
         
