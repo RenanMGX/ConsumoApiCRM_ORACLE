@@ -50,7 +50,16 @@ class SpamFilter:
             r"Além das opções acima, você ainda pode efetuar o pagamento",
             r"em nosso site",
             r"Intranet do Grupo Patrimar",
-            r"curriculo"  
+            r"curriculo",
+            r"Clique aqui para mais detalhes",
+            r"Oferta exclusiva para você",
+            r"Promoção imperdível",
+            r"Ganhe um desconto especial",
+            r"Última chance",
+            r"Não perca essa oportunidade",
+            r"Confirme sua inscrição",
+            r"Aproveite agora",
+            r"Grátis por tempo limitado"
         ]
         return spam_keywords
     
