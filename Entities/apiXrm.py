@@ -6,6 +6,7 @@ from time import sleep
 from typing import List, Dict, Literal
 from datetime import datetime
 import json
+import os
 
 #https://fa-etyz-saasfaprod1.fa.ocs.oraclecloud.com/crmRestApi/resources/11.13.18.05/serviceRequests?offset={offset}&limit=500&q=TipoDeFormulario_c!=PER_SVR_FORM_VENDAS_2 or IS NULL"
 class ApiXrm:
@@ -137,6 +138,22 @@ class ApiXrm:
                 raise Exception(type(error), error)
         
         return list_contents
+    
+    def cadastrar_contatos(self, payloads:dict) -> requests.models.Response:
+        endpoint:str = f"{self.url}/crmRestApi/resources/11.13.18.05/contacts"
+        
+        headersList = {
+        "Content-Type": "application/json" 
+        }
+        payload = json.dumps(payloads)
+        
+        response = requests.request("POST", endpoint, data=payload, headers=headersList, auth=(self.__username, self.__password))
+        
+        print(response.status_code)
+        print(response.reason)
+        print(response.text)
+        
+        return response
 
 if __name__ == "__main__":
     pass
