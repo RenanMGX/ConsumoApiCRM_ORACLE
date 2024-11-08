@@ -1,5 +1,7 @@
 import sys
 from typing import Dict, List
+from .logs import Logs, traceback
+from datetime import datetime
 
 class Arguments:
     def __init__(self, valid_arguments:Dict[str, object]) -> None:
@@ -13,6 +15,7 @@ class Arguments:
         if len(self.__argv) > 1:
             selected_argv = self.__argv[1]
             if selected_argv in self.__valid_arguments:
+                agora = datetime.now()
                 try:
                     if len(self.__argv) == 3:
                         self.__valid_arguments[selected_argv](self.__argv[2]) #type: ignore
@@ -20,8 +23,10 @@ class Arguments:
                         self.__valid_arguments[selected_argv](self.__argv[2:]) #type: ignore
                     else:
                         self.__valid_arguments[selected_argv]() #type: ignore
-                except Exception as error:
-                    print(type(error), str(error))
+                    Logs().register(status='Concluido', description=f"Automação Finalizada com Sucesso! tempo Execução:{(datetime.now() - agora)}", exception=traceback.format_exc())
+                except Exception as err:
+                    print(type(err), str(err))
+                    Logs().register(status='Error', description=str(err), exception=traceback.format_exc())
             else:
                 print("argumento não existe!")
                 self.__listar_argvs()

@@ -48,12 +48,17 @@ class ApiXrm:
             raise Exception(f"erro ao consumir api\n{' '*11}{response.status_code=}\n{' '*11}{response.reason=}\n{' '*11}{response.text=}")
         
         
-    def request(self, *, offset:int, limit:int=500, endpoint:Literal["tickets", "empreendimentos"] = "tickets"):
+    def request(self, *, offset:int, limit:int=500, endpoint:Literal["tickets", "empreendimentos", "unidades"] = "tickets"):
         endpoint_url:str
         if endpoint == "tickets":
             endpoint_url = "/crmRestApi/resources/11.13.18.05/serviceRequests"
+            #self.q_param = "TipoDeFormulario_c!=PER_SVR_FORM_VENDAS_2 or IS NULL;CreationDate>2024-05-03"
+            self.q_param = "TipoDeFormulario_c!=PER_SVR_FORM_VENDAS_2 or IS NULL"
         elif endpoint == "empreendimentos":
             endpoint_url = "/crmRestApi/resources/11.13.18.05/Empreendimento_c"
+            self.q_param = ""
+        elif endpoint == "unidades":
+            endpoint_url = "/crmRestApi/resources/11.13.18.05/Unidade_c"
             self.q_param = ""
 
         
@@ -73,12 +78,12 @@ class ApiXrm:
         #print(url)
         raise Exception(f"não foi possivel consumir api\n{response.status_code=}\n{response.reason}\n{erro=}")
     
-    def _inner_request(self, queue:multiprocessing.Queue, offset:int, limit:int=500, endpoint:Literal["tickets"]|Literal['empreendimentos'] = "tickets"):
+    def _inner_request(self, queue:multiprocessing.Queue, offset:int, limit:int=500, endpoint:Literal["tickets", "empreendimentos", "unidades"] = "tickets"):
         response = self.request(offset=offset, limit=limit, endpoint=endpoint)
         #print(response)
         queue.put(response)
     
-    def multi_request(self, *,offset:int=0, pages:int=0, limit:int=500, endpoint:Literal["tickets"]|Literal['empreendimentos'] = "tickets", num_threads:int=1):
+    def multi_request(self, *,offset:int=0, pages:int=0, limit:int=500, endpoint:Literal["tickets", "empreendimentos" , "unidades"] = "tickets", num_threads:int=1):
         list_contents:list = []
         stop_paginate:bool = False
         
@@ -149,9 +154,26 @@ class ApiXrm:
         
         response = requests.request("POST", endpoint, data=payload, headers=headersList, auth=(self.__username, self.__password))
         
-        print(response.status_code)
-        print(response.reason)
-        print(response.text)
+        return response
+    
+    def registrar_unidade(self, *, PartyNumber:str, apartamento_id:int, principal_comprador:bool) -> requests.models.Response:
+        endpoint:str = f"{self.url}/crmRestApi/resources/11.13.18.05/contacts/{PartyNumber}//child/PersonDEO_ContatoToUnidadeObj_Src_PersonToContatoToUnidadeObj_c_Tgt"
+        
+        headersList = {
+        "Content-Type": "application/json" 
+        }
+        
+        data:dict = {
+            "Unidade_Id_Tgt_Unidade_cToContatoToUnidadeObj_c": apartamento_id
+        }
+        if principal_comprador:
+            data["StatusDeProprietario_c"] = "Y"
+        else:
+            data["StatusDeProprietario_c"] = "N"
+            
+        payload = json.dumps(data)
+        
+        response = requests.request("POST", endpoint, data=payload, headers=headersList, auth=(self.__username, self.__password))
         
         return response
 

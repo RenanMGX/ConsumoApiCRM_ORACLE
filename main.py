@@ -40,7 +40,7 @@ class Extrat(ApiXrm):
                 offset: int = 0, 
                 pages: int = 0, 
                 limit: int = 500,
-                endpoint:Literal['tickets']|Literal['empreendimentos'] = "tickets", 
+                endpoint:Literal['tickets', 'empreendimentos', 'unidades'] = "tickets", 
                 num_threads:int = 1, 
                 #attemps:int = 5
                 ):
@@ -81,13 +81,13 @@ if __name__ == "__main__":
         
         crd:dict = Credential(Config()['credential']['crd']).load()
         
-        api = Extrat(username=crd["user"], password=crd["password"], url=crd["url"])
-        #tickets.q_param = "TipoDeFormulario_c!=PER_SVR_FORM_VENDAS_2 or IS NULL;CreationDate>2024-05-03"
-        api.q_param = "TipoDeFormulario_c!=PER_SVR_FORM_VENDAS_2 or IS NULL"
+        api = Extrat(username=crd["user"], password=crd["password"], url=crd["url"])        
         
         api.extrair(endpoint="tickets", num_threads=40).tratar_tickets().salvar(path=Config()['paths']['file_save_path_tickets'])
 
         api.extrair(endpoint="empreendimentos").salvar(path=Config()['paths']['file_save_path_empreendimentos'])
+        
+        api.extrair(endpoint="unidades", num_threads=40).salvar(path=Config()['paths']['file_save_path_unidades'])
         
         Logs().register(status='Concluido', description="Extração de dados do CRM Concluido!")
     except Exception as err:

@@ -44,24 +44,27 @@ class Phones:
 class Contatos:
     @property
     def FirstName(self) -> str:
-        return self.__value['Nome'].split(" ")[0]
+        return self.__value['Nome'].split(" ")[0].title()
     
     @property
     def LastName(self) -> str:
         name = self.__value['Nome'].split(" ")
         if len(name) > 1:
-            return " ".join(name[1:])
+            return " ".join(name[1:]).title()
         return ""
     
     @property
     def PersonDEO_Nacionalidade_c(self) -> str:
-        return self.__value['Nacionalidade']
+        nacionalidade = self.__value['Nacionalidade']
+        if nacionalidade:
+            return nacionalidade
+        return "Brasileiro(a)"
     
     @property
     def Gender(self) -> str:
         sexo = self.__value['Sexo']
         if sexo == 'Masculino':
-            return "FEMALE"
+            return "MALE"
         elif sexo == 'Feminino':
             return "FEMALE"
         return ""
@@ -79,6 +82,10 @@ class Contatos:
             return "PER_ESTADOCIVIL_VIUVO"
         elif estado_civil == 'União Estável':
             return "PER_ESTADOCIVIL_UNIAOESTAVEL"
+        elif estado_civil == 'Desquitado':
+            return "PER_ESTADOCIVIL_DESQUITADO"
+        elif estado_civil == 'Separação Judicial':
+            return "PER_ESTADOCIVIL_SEPJUDICIAL"
         return ""
     
     @property
@@ -96,8 +103,12 @@ class Contatos:
     
     @property
     def DateOfBirth(self) -> str:
-        date = datetime.strptime(self.__value['Data Nascimento'], '%Y-%m-%d %H:%M:%S')
-        return date.strftime('%Y-%m-%d')
+        try:
+            date = datetime.strptime(self.__value['Data Nascimento'], '%Y-%m-%d %H:%M:%S')
+            return date.strftime('%Y-%m-%d')
+        except:
+            date = datetime.strptime(self.__value['Data Nascimento'], '%Y-%m-%dT%H:%M:%S.%f')
+            return date.strftime('%Y-%m-%d')
     
     @property
     def HomePhone(self) -> Phones:
@@ -120,6 +131,8 @@ class Contatos:
         tipo_endere:str = self.__value['Tipo do Endereço']
         if tipo_endere == 'Residencial':
             return "PER_TIPODEENDERECO_RES"
+        elif tipo_endere == 'Comercial':
+            return "PER_TIPODEENDERECO_COM"
         return ""
     
     @property
@@ -144,7 +157,62 @@ class Contatos:
     
     @property
     def PersonDEO_Estado_c(self) -> str:
-        return self.__value['Estado']
+        estado:str = self.__value['Estado']
+        if estado == 'Acre':
+            return "AC"
+        if estado == 'Alagoas':
+            return "AL"
+        if estado == 'Amapá':
+            return "AP"
+        if estado == 'Amazonas':
+            return "AM"
+        if estado == 'Bahia':
+            return "BA"
+        if estado == 'Ceará':
+            return "CE"
+        if estado == 'Distrito Federal':
+            return "DF"
+        if estado == 'Espírito Santo':
+            return "ES"
+        if estado == 'Goiás':
+            return "GO"
+        if estado == 'Maranhão':
+            return "MA"
+        if estado == 'Mato Grosso':
+            return "MT"
+        if estado == 'Mato Grosso do Sul':
+            return "MS"
+        if estado == 'Minas Gerais':
+            return "MG"
+        if estado == 'Pará':
+            return "PA"
+        if estado == 'Paraíba':
+            return "PB"
+        if estado == 'Paraná':
+            return "PR"
+        if estado == 'Pernambuco':
+            return "PE"
+        if estado == 'Piauí':
+            return "PI"
+        if estado == 'Rio de Janeiro':
+            return "RJ"
+        if estado == 'Rio Grande do Norte':
+            return "RN"
+        if estado == 'Rio Grande do Sul':
+            return "RS"
+        if estado == 'Rondônia':
+            return "RO"
+        if estado == 'Roraima':
+            return "RR"
+        if estado == 'Santa Catarina':
+            return "SC"
+        if estado == 'São Paulo':
+            return "SP"
+        if estado == 'Sergipe':
+            return "SE"
+        if estado == 'Tocantins':
+            return "TO"
+        return estado.upper()[0:2]
     
     @property
     def PersonDEO_Complemento_c(self) -> str:
@@ -162,11 +230,37 @@ class Contatos:
     def PersonDEO_Pais_Id_c(self) -> str:
         return "BR"
     
+    @property
+    def Empreendimento(self) -> str:
+        return self.__value['Empreendimento']
+    
+    @property
+    def Bloco(self) -> str:
+        return self.__value['Bloco']
+
+    @property
+    def Unidade(self) -> str:
+        return self.__value['Unidade']
+    
+    @property
+    def Principal_Comprador(self) -> bool:
+        principal = self.__value['Principal (Sim ou Não)']
+        if principal == 'Sim':
+            return True
+        return False
+
+    @property
+    def PartyNumber(self) -> str:
+        return self.__PartyNumber
+    @PartyNumber.setter
+    def PartyNumber(self, value:str) -> None:
+        self.__PartyNumber = value
     
     def __init__(self, value:Series) -> None:
         self.__value:Series = value
+        self.__PartyNumber = ""
     
-    def __str__(self) -> str:
+    def __repr__(self) -> str:
         return F"Contato: {self.__value['Nome']}, CPF/ CNPJ: {self.__value['CPF/ CNPJ']}"
     
     def payload(self) -> dict:
