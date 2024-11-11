@@ -12,7 +12,7 @@ class Apartamento:
         
     def find(self, *, empreendimento:str, bloco:str, unidade:str) -> int:
         result = self.__df[
-            (self.__df['Empreendimento_c'].str.contains(empreendimento, na=False, case=False)) &
+            (self.__df['Empreendimento_c'] == empreendimento) &
             (self.__df['Bloco_c'] == bloco) &
             (self.__df['Unidade_c'] == unidade)
         ]

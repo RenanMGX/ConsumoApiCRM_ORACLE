@@ -42,7 +42,7 @@ class Execute:
         df = pd.read_json(Config()['paths']['file_save_clientes'])
         df['Data Criação'] = pd.to_datetime(df['Data Criação'], errors='coerce', format='%Y-%m-%dT%H:%M:%S.%f')
         df = df[
-            (df['Data Criação'] >= datetime(2024,9,1)) &
+            (df['Data Criação'] >= datetime(2024,1,1)) &
             (df['Principal (Sim ou Não)'] == "Não") &
             (~df['CPF/ CNPJ'].isin(RegistroCPFCadastrados.load())) 
         ]
