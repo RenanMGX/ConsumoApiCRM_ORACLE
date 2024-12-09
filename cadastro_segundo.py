@@ -105,12 +105,13 @@ class Execute:
                 result = api.cadastrar_contatos(contato.payload())
                 if not result.status_code == 201:
                     if "Já existe um contato com o CPF inserido".lower() in result.text.lower():
-                        print(P(f"{contato} já esta cadastrado", color='red'))
+                        #print(P(f"{contato} já esta cadastrado", color='red'))
                         RegistroCPFCadastrados.add(str(value['CPF/ CNPJ']))
                         continue
                     raise Exception(f"erro ao cadastrar contato: {result.status_code=}; {result.reason}; {result.text}")
                 else:
-                    print(f"cadastrado:{result.json().get("PartyNumber")}")
+                    #print(f"cadastrado:{result.json().get("PartyNumber")}")
+                    print(P(f"{contato};{result.json().get("PartyNumber")} -> cadastrado!", color='green'))
 
                 data:dict = result.json()
                 contato.PartyNumber = data['PartyNumber']
