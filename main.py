@@ -1,13 +1,21 @@
 from typing import Literal
 from Entities.apiXrm import ApiXrm
 from Entities.tratarDados import RelatRelacionementoCliente
-from Entities.dependencies.config import Config
-from Entities.dependencies.credenciais import Credential
-from Entities.dependencies.logs import Logs, traceback
+#from Entities.dependencies.config import Config
+#from Entities.dependencies.credenciais import Credential
+#from Entities.dependencies.logs import Logs, traceback
 import multiprocessing
 from datetime import datetime
 import pandas as pd
 from time import sleep
+import os
+
+from botcity.maestro import * # type: ignore
+maestro = BotMaestroSDK.from_sys_args()
+try:
+    execution = maestro.get_execution()
+except:
+    maestro = None
 
 #file_save_path_tickets:str = 
 #file_save_path_empreendimentos:str = 
@@ -75,22 +83,23 @@ class Extrat(ApiXrm):
         return
 
 if __name__ == "__main__":
-    try:
-        print("executado pelo main.py")
-        multiprocessing.freeze_support()
+    from patrimar_dependencies.sharepointfolder import SharePointFolders
+    from patrimar_dependencies.credenciais import Credential
+    
+    print("executado pelo main.py")
+    multiprocessing.freeze_support()
         
-        crd:dict = Credential(Config()['credential']['crd']).load()
+    crd:dict = Credential(
+        path_raiz=SharePointFolders(r'RPA - Dados\CRD\.patrimar_rpa\credenciais').value,
+        name_file="XRM_API_PRD"
+    ).load()
         
-        api = Extrat(username=crd["user"], password=crd["password"], url=crd["url"])        
+    api = Extrat(username=crd["user"], password=crd["password"], url=crd["url"])        
         
-        api.extrair(endpoint="tickets", num_threads=40).tratar_tickets().salvar(path=Config()['paths']['file_save_path_tickets'])
+    api.extrair(endpoint="tickets", num_threads=40).tratar_tickets().salvar(path=os.path.join(SharePointFolders(r'RPA - Dados\XRM - Relacionamento Com Cliente\json').value, 'all_tickets.json'))
 
-        api.extrair(endpoint="empreendimentos").salvar(path=Config()['paths']['file_save_path_empreendimentos'])
+    api.extrair(endpoint="empreendimentos").salvar(path=os.path.join(SharePointFolders(r'RPA - Dados\XRM - Relacionamento Com Cliente\json').value, 'empreendimentos.json'))
         
-        api.extrair(endpoint="unidades", num_threads=40).salvar(path=Config()['paths']['file_save_path_unidades'])
-        
-        Logs().register(status='Concluido', description="Extração de dados do CRM Concluido!")
-    except Exception as err:
-        Logs().register(status='Error', description=str(err), exception=traceback.format_exc())
+    api.extrair(endpoint="unidades", num_threads=40).salvar(path=os.path.join(SharePointFolders(r'RPA - Dados\XRM - Relacionamento Com Cliente\json').value, 'unidades.json'))
             
     

@@ -6,12 +6,19 @@ from getpass import getuser
 #from main import file_save_path_tickets
 from typing import Literal
 from Entities.apiXrm import ApiXrm
-from Entities.dependencies.credenciais import Credential
-from Entities.dependencies.logs import Logs, traceback
-from Entities.dependencies.config import Config
+#from Entities.dependencies.credenciais import Credential
+#from Entities.dependencies.logs import Logs, traceback
+#from Entities.dependencies.config import Config
 import multiprocessing
 from datetime import datetime
 from copy import deepcopy
+
+from botcity.maestro import * # type: ignore
+maestro = BotMaestroSDK.from_sys_args()
+try:
+    execution = maestro.get_execution()
+except:
+    maestro = None
 
 class SpamFilter:
     @property
@@ -101,9 +108,9 @@ class SpamFilter:
         
         
 class AlterTickets(ApiXrm):
-    def __init__(self) -> None:
-        crd = Credential(Config()['credential']['crd']).load()
-        super().__init__(username=crd['user'], password=crd['password'], url=crd["url"])
+    def __init__(self, *, user:str, password:str, url:str) -> None:
+        #crd = Credential(Config()['credential']['crd']).load()
+        super().__init__(username=user, password=password, url=url)
         
     def alter(self, *, endpoint: str):
         new_values = {
@@ -114,21 +121,33 @@ class AlterTickets(ApiXrm):
             # "StatusTypeCd": "ORA_SVC_RESOLVED"
             }
         return super().alter(endpoint=endpoint, new_values=new_values)     
+
+
+class ExecuteAPP:
+    @staticmethod
+    def start(
+        *, 
+        user:str, 
+        password:str, 
+        url:str,
+        file_save_path_tickets:str
+    ):
         
         
-if __name__ == "__main__":
-    try:
-        crd = Credential(Config()['credential']['crd']).load()
         agora = datetime.now()
         multiprocessing.freeze_support()
-        filter = SpamFilter(Config()['paths']['file_save_path_tickets'])
-        api = AlterTickets()
+        filter = SpamFilter(file_save_path_tickets)
+        api = AlterTickets(
+            user=user,
+            password=password,
+            url=url
+        )
 
         lista_ids = filter.spam('List_ids')
         historico:pd.DataFrame = filter.historico
         historico["processou"] = False
         for id in lista_ids:
-            endpoint = f"{crd["url"]}crmRestApi/resources/11.13.18.05/serviceRequests/{id}"
+            endpoint = f"{url}crmRestApi/resources/11.13.18.05/serviceRequests/{id}"
             row = historico[historico['Número de Referência'] == id].index[0]
             try:
                 result = api.alter(endpoint=endpoint)
@@ -140,16 +159,48 @@ if __name__ == "__main__":
         path_registros:str = os.path.join(os.getcwd(), 'Registros')
         if not os.path.exists(path_registros):
             os.makedirs(path_registros)
-        
-        name_file_registro:str = os.path.join(path_registros, datetime.now().strftime('Registro_alteração_filas-%d%m%Y-%H%M%S.xlsx'))
+            
+        #name_file_registro:str = os.path.join(path_registros, datetime.now().strftime('Registro_alteração_filas-%d%m%Y-%H%M%S.xlsx'))
         historico_for_save = historico[historico['processou'] == True]
         if not historico_for_save.empty:
-            historico_for_save.to_excel(name_file_registro, index=False)
+            #historico_for_save.to_excel(name_file_registro, index=False)
             lista_movidos:list = historico_for_save['Número de Referência'].tolist()
-            Logs().register(status='Concluido', description=f"lista dos chamados que foram movidos para Spam {str(lista_movidos)}")
+            for id in lista_movidos:
+                if not maestro is None:
+                    maestro.new_log_entry(
+                        activity_label="CRM_ORACLE_-_Filtro_Spam",
+                        values={
+                            "id": id
+                        }
+                    )
+            print(f"lista dos chamados que foram movidos para Spam {str(lista_movidos)}")
             sys.exit()
-        Logs().register(status='Concluido', description=f"Automação Concluida mas sem chamados movidos para o Spam")
+            
+        if not maestro is None:
+            maestro.alert(
+                task_id=execution.task_id,
+                title="Concluido",
+                message="Automação Concluida mas sem chamados movidos para o Spam",
+                alert_type=AlertType.INFO
+            )       
+        
+        print("Automação Concluida mas sem chamados movidos para o Spam")
         print(f"{datetime.now() - agora}")
         
-    except Exception as err:
-        Logs().register(status='Error', description=str(err), exception=traceback.format_exc())
+if __name__ == "__main__":
+    from patrimar_dependencies.sharepointfolder import SharePointFolders
+    from patrimar_dependencies.credenciais import Credential
+
+    crd:dict = Credential(
+        path_raiz=SharePointFolders(r'RPA - Dados\CRD\.patrimar_rpa\credenciais').value,
+        name_file="XRM_API_PRD"
+    ).load()
+    
+    print(crd)
+    
+    ExecuteAPP.start(
+        user=crd['user'],
+        password=crd['password'],
+        url=crd['url'],
+        file_save_path_tickets=os.path.join(SharePointFolders(r'RPA - Dados\XRM - Relacionamento Com Cliente\json').value, 'all_tickets.json')
+    )
