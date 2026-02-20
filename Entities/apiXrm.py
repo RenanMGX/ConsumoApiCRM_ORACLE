@@ -113,11 +113,10 @@ class ApiXrm:
                     print(str(process.name), end="; ")
                     process.start()
                     
-                print("\n\nFinalizou:")
                 for queue_response in list_queue:# type: ignore
                     
                     print(str(queue_response), end="; ")
-                    queue_response:requests.models.Response = queue_response.get() # type: ignore
+                    queue_response:requests.models.Response = queue_response.get(timeout=120) # type: ignore
                     if queue_response.status_code == 200:
                         queue_json:dict = queue_response.json()
                         
@@ -131,15 +130,19 @@ class ApiXrm:
                         stop_paginate = True
                         for process in list_process:
                             process.kill()
+                            process.join()
                         raise Exception(queue_response.status_code, queue_response.reason)
                     queue_response.close()
-                        
-            
+
+                for process in list_process:
+                    process.join()
+                print("\n\nFinalizou:")
                 print(len(list_contents))
             except Exception as error:
                 print("Erro execução Process", type(error), error)
                 for process in list_process:
                     process.kill()
+                    process.join()
                 raise Exception(type(error), error)
         
         return list_contents
