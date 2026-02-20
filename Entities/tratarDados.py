@@ -9,7 +9,7 @@ import numpy as nb
 class RelatRelacionementoCliente:
     @staticmethod
     def tratar(df:pd.DataFrame) -> pd.DataFrame:
-        columns:list = ["SrNumber" , "QueueName" , "Categoria_c" , "CategoriaDeAssunto_c" , "Title" , "ProblemDescription" , "StatusCdMeaning" , "NomeDoEmpreendimento_c" , "BusinessUnitName" , "ChannelTypeCdMeaning" , "EnviarPesquisa_c" , "PesquisaEnviada_c" , "Avaliacao_c",  "CreationDate" , "LastReopenDate" , "LastResolvedDate" , "DataDaUltimaAlteracaoDeStatus_c" , "LastUpdateDate" , "ResolvedBy" , "PrimaryContactPartyUniqueName" , "PrimaryContactEmailAddress" , "PrimaryContactFormattedPhoneNumber" , "TipoDeFormulario_c" , "DataDaVisita_c" , "CompareceuAVisita_c" , "AdquiriuPersonalizacao_c" , "AdquiriuModificacao_c" , "DataDaVistoria_c" , "StatusDaVistoria_c" , "DataDaRevistoria_c" , "StatusDaRevistoria_c" , "DataDeEntregaDasChaves_c" , "ChavesEntregues_c" , "HorarioDoAgendamento_c" , "Patologia_c" , "DataDaSolucao_c" , "Procedencia_c" , "TipoDeEntrada_c" , "MotivoDoPendente_c" , "Transbordo_c" , "Unidade_c", "Causa_c", "SubCausaN1_c", "SubCausaN2_c", "Prazo_c", "TipoDeRegistro_c", "StatusCdOldValue_c", "LastUpdatedByDisplayName"]
+        columns:list = ["SrNumber" , "QueueName" , "Categoria_c" , "CategoriaDeAssunto_c" , "Title" , "ProblemDescription" , "StatusCdMeaning" , "NomeDoEmpreendimento_c" , "BusinessUnitName" , "ChannelTypeCdMeaning" , "EnviarPesquisa_c" , "PesquisaEnviada_c" , "Avaliacao_c",  "CreationDate" , "LastReopenDate" , "LastResolvedDate" , "DataDaUltimaAlteracaoDeStatus_c" , "LastUpdateDate" , "ResolvedBy" , "PrimaryContactPartyUniqueName" , "PrimaryContactEmailAddress" , "PrimaryContactFormattedPhoneNumber" , "TipoDeFormulario_c" , "DataDaVisita_c" , "CompareceuAVisita_c" , "AdquiriuPersonalizacao_c" , "AdquiriuModificacao_c" , "DataDaVistoria_c" , "StatusDaVistoria_c" , "DataDaRevistoria_c" , "StatusDaRevistoria_c" , "DataDeEntregaDasChaves_c" , "ChavesEntregues_c" , "HorarioDoAgendamento_c" , "Patologia_c" , "DataDaSolucao_c" , "Procedencia_c" , "TipoDeEntrada_c" , "MotivoDoPendente_c" , "Transbordo_c" , "Unidade_c", "Causa_c", "SubCausaN1_c", "SubCausaN2_c", "Prazo_c", "TipoDeRegistro_c", "StatusCdOldValue_c", "LastUpdatedByDisplayName", "fcr_c", "FirstStatusChange_c"]
         
         df = df[columns]
         
@@ -60,7 +60,10 @@ class RelatRelacionementoCliente:
             "SubCausaN2_c" : "SubCausaN2",
             "Prazo_c" : "Prazo",
             "TipoDeRegistro_c": "Tipo De Registro",
+            "StatusCdOldValue_c": "Status_OLD",
             "LastUpdatedByDisplayName": "Última Aualização por",
+            "fcr_c" : "FCR",
+            "FirstStatusChange_c": "Data da Primeira Alteração de Status",
             })
         
         for row,value in df.iterrows():
@@ -149,7 +152,7 @@ class RelatRelacionementoCliente:
             'PER_SVR_CATEGORIA_INDCADAST' : "INDCADAST",
             'PER_SVR_CATEGORIA_INDICESCORR' : "INDICESCORR",
             'PER_SVR_CATEGORIA_INFORMEREND' : "INFORMEREND",
-            'PER_SVR_CATEGORIA_INSTGAS' : "INSTGAS",
+            'PER_SVR_CATEGORIA_INSTGAS' : "Instalação Gás",
             'PER_SVR_CATEGORIA_IPTU' : "IPTU",
             'PER_SVR_CATEGORIA_ITBIREG' : "ITBIREG",
             'PER_SVR_CATEGORIA_KIT' : "KIT",
@@ -177,7 +180,7 @@ class RelatRelacionementoCliente:
             'PER_SVR_CATEGORIA_REGISTROATA' : "REGISTROATA",
             'PER_SVR_CATEGORIA_RELVALPAGOS' : "RELVALPAGOS",
             'PER_SVR_CATEGORIA_REPAROSAPT' : "REPAROSAPT",
-            'PER_SVR_CATEGORIA_REVEXT' : "REVEXT",
+            'PER_SVR_CATEGORIA_REVEXT' : "Revestimento Externo",
             'PER_SVR_CATEGORIA_STAND' : "STAND",
             'PER_SVR_CATEGORIA_STATREPASSE' : "STATREPASSE",
             'PER_SVR_CATEGORIA_TAXAINCENDIO' : "TAXAINCENDIO",
@@ -318,7 +321,11 @@ class RelatRelacionementoCliente:
         'QUADRA_POLIESPORTIVA' : 'Quadra Poliesportiva',
         'CHURRASQUEIRA' : 'Churrasqueira',
         'APARTAMENTO_AVULSO' : 'Apartamento avulso',
-        'UNIDADE_ESTOQUE' : 'Unidade Estoque'
+        'UNIDADE_ESTOQUE' : 'Unidade Estoque',
+        'CHAMINE': 'Chaminé',
+        'PISO_EMBORRACHADO' : 'Piso Emborrachado',
+        'IMPEDIMENTO_JUDICIAL' : 'Impedimento judicial',
+        
         }
         
         sub_causa_n1 = {
@@ -341,7 +348,7 @@ class RelatRelacionementoCliente:
         'CONEXÕES_MAL_ENCAIXADAS' : 'Conexões mal encaixadas',
         'CORTES_FUROS_ILEGAIS' : 'Cortes e furos ilegais',
         'DANIFICADO_MAU_USO' : 'Danificado por mau uso',
-        'DANO_ESTRU_ESTS_ME_ETC' : 'DANO_ESTRU_ESTS_ME_ETC', ##########################
+        'DANO_ESTRU_ESTS_ME_ETC' : 'Dano estrutural - estruturas soltas, mal encaixadas, etc.', ##########################
         'DEFEITOS_NA_ESTRUTURA' : 'Defeitos na estrutura',
         'DEFEITOS_PECAS' : 'Defeito nas peças',
         'DEFEITO_CENTRAL_INTERFONE' : 'Defeito/Falta de interfone',
@@ -354,7 +361,7 @@ class RelatRelacionementoCliente:
         'DEMOLIÇÃO_ILEGAL' : 'Demolição ilegal',
         'DESAGREGAMENTO_PROTEÇÃO_MECÂNI' : 'Desagregamento da proteção mecânica',
         'DESCOLIL' : 'Descolamento',
-        'DESCONFORMIDADE_NOM_TEC' : 'DESCONFORMIDADE_NOM_TEC',####################
+        'DESCONFORMIDADE_NOM_TEC' : 'Em desconformidade com a norma técnica',####################
         'DESREGULAGEM_REDUTORAS_PRESSAO' : 'Desregulagem de redutoras de pressão/ajustes',
         'DESREGULAGEM_REDUTORES_PRESSAO' : 'Desregulagem de redutores de pressão/Ajuste',
         'DISJUNTOR_CONTATORA_DESARMADA' : 'Disjuntor/Contatora desarmada',
@@ -362,7 +369,7 @@ class RelatRelacionementoCliente:
         'DRENAGEM' : 'Drenagem',
         'DRENO_OBSTRUÍDO' : 'Dreno obstruído',
         'DRY_WALL' : 'Dry Wall',
-        'EMPENO_DESALINHAMENTO' : 'EMPENO_DESALINHAMENTO', #####################
+        'EMPENO_DESALINHAMENTO' : 'Empeno, desalinhamento', #####################
         'ENC_SOL_CONT_CONSTRU_QUAND_CON' : 'Encerrado e solicitado contato com a construtora quando conveniente',
         'ENTUPIMENTO_DE_ELETRODUTOS' : 'Entupimento de eletrodutos',
         'ESPACO_INSU_MEDIDOR_AQUECEDOR' : 'Espaço insuficiente para medidor/Aquecedor',
@@ -392,11 +399,11 @@ class RelatRelacionementoCliente:
         'FALHA_ARREMATE_RALO_PASSAGEM_L' : 'Falha no arremate do ralo/passagem da laje',
         'FALHA_COMPO_VIDRO_LAMINADO' : 'Falha na composição do vidro laminado',
         'FALHA_DILTAÇÃO_BARULHO_PISO_ES' : 'Falha na diltação (barulho ao pisar, piso estufando, etc.)',
-        'FALHA_ESTUTURA_APOIO' : 'FALHA_ESTUTURA_APOIO',############################
+        'FALHA_ESTUTURA_APOIO' : 'Falha da estrutura de apoio',############################
         'FALHA_FIXAÇÃO_PECAS' : 'Falha de fixação de peças',
         'FALHA_JUNTAS_T_ENCONTRO_PAREDE' : 'Falha nas juntas T e encontros com paredes',
         'FALHA_MOLAS_FECHADURA' : 'Falha nas molas e fechaduras',
-        'FALHA_NA_FIXACAO' : 'FALHA_NA_FIXACAO', ####################
+        'FALHA_NA_FIXACAO' : 'Falha na fixação', ####################
         'FALHA_PINTURA_EXPÓXI' : 'Falha em pintura expóxi',
         'FALTAS_COMPONENTES' : 'Falta de componentes',
         'FALTA_CALAFETACAO_FRESTAS_MET' : 'Falta de calafetação em frestas metálicas',
@@ -409,7 +416,7 @@ class RelatRelacionementoCliente:
         'FALTA_FIXACAO_TUBOS_CONEXOES' : 'Falta fixação de tubos e conexões',
         'FALTA_IDENTIFICAÇÃO_DG' : 'Falta de identificação no DG',
         'FALTA_IDENTIFIC_ADEQUA_CIRCUIT' : 'Falta de identificação adequada do circuito/Painéis/Tomadas',
-        'FALTA_OU_EXCESSO_PRESSAO_GAS' : 'FALTA_OU_EXCESSO_PRESSAO_GAS', ####################
+        'FALTA_OU_EXCESSO_PRESSAO_GAS' : 'Falta ou excesso de pressão de gás', ####################
         'FALTA_PINTURA_ANT_MOFO' : 'Falta de pintura anti mofo',
         'FALTA_PLACAS_INTERFONE' : 'Defeito/Falta de interfone',
         'FALTA_PONTO_IRRIGACAO' : 'Falta ponto para irrigação',
@@ -479,7 +486,7 @@ class RelatRelacionementoCliente:
         'REALIZADO_CORTESIA_PARA_CLIENT' : 'Realizado em cortesia para o cliente.',
         'REALIZADO_PELO_CLIENTE' : 'Realizado pelo cliente',
         'REFORMA_APARTAMENTO_AVULSO' : 'Reforma de apartamento avulso',
-        'REFORMA_UNIDADE_INTERFONE' : 'REFORMA_UNIDADE_INTERFONE', ##################
+        'REFORMA_UNIDADE_INTERFONE' : 'Reforma de unidade em estoque', ##################
         'REGISTROS' : 'Registros',
         'REGULAGEM_FALTA_AJUSTES' : 'Regulagem/Falta de ajustes',
         'REJUNTE_ESCURECIDO_AMAR_MOFADO' : 'Rejunte escurecido/Amarelado/Mofado',
@@ -507,7 +514,61 @@ class RelatRelacionementoCliente:
         'VAZAMENTO_PARAFUSO_FIXACAO_TEL' : 'Vazamento pelo parafuso de fixação da telha',
         'VAZAMENTO_PAREDES' : 'Vazamento nas paredes',
         'VAZAMENTO_TUB_TRINCADA_FURADA' : 'Vazamento/tubulação trincada/furada',
-        'VAZEMENTO' : 'Vazamento'
+        'VAZEMENTO' : 'Vazamento',
+        'ALAMBRADO' : 'Alambrado',
+        'PROBLEMAS_COM_PISO': 'Problemas com o piso',
+        'ILUMINCAO': 'Iluminação',
+        "FALHAS_NO_RETORNO" : "Falhas no retorno",
+        "FALHAS_AUSENC_ISOL_TERMICO" : "Falhas ou ausência de isolamento térmico",
+        "JUNTA_EXPANSAO_MISULA" : "Junta de expansão / Mísula",
+        "PROBLEMA_NAS_BOMBAS" : "Problema nas bombas",
+        "VIBRACAO_DE_TUBULACOEES" : "Vibração de tubulações",
+        "CHUVEIRO_INTAL_INCOMP_DR" : "Chuveiro instalado incompatível com DR",
+        "PROBLEMA_COM_ILUMINACAO_PISC" : "Problema com a iluminação da piscina",
+        "ELETRODUTO_OBSTRUÍDO" : "Eletroduto obstruído",
+        "FISSURA_TAMPONAMENTO_GRAVATA" : "Infiltração/Fissura devido falha no tamponamento da gravata",
+        "CORROSAO" : "Corrosão",
+        "FALH_FALT_FIX_TUBOS_CONEXAO_AB" : "Falhas/Falta de fixação de tubos e conexões (abraçadeiras, tirantes, perfilados,",
+        "VIBRACOES_DE_TUBULACOES" : "Vibrações de tubulações",
+        "BOMBA_POCO_AGUA_PLUV_N_F" : "Bomba do poço de água pluvial não funciona",
+        "LIMPEZA_POCO_CAIXAS_N_REALIZAD" : "Limpeza do poço/caixas não realizada",
+        "CALHA_COM_PROBLMEA_VAZAMENTO" : "Calha com problema de vazamento",
+        "SISTEMA_CAPTACAO_SEM_VAZAO" : "Sistema de captação sem vazão",
+        "FALTA_JAMP_DG_CAIX_PASSAGEM" : "Falta de jampeamento no DG ou caixa de passagem",
+        "DEFEITO_DEFEITO_AQUECEDOR" : "Defeito no aquecedor",
+        "DEFEITO_DEFEITO_MOTOR" : "Defeito no motor",
+        "DEFEITO_PAINEL_COMANDO" : "Defeito no painel de comando",
+        "FALHAS_VISU_CARC_BOC_TRAV_FILT" : "Falhas visuais - carcaça, bocais, travesseiros, filtros, etc.",
+        "PROBLEMA_ILUMINACAO" : "Problema na iluminação",
+        "RALO_DE_FUNDO" : "Ralo de fundo",
+        "VAZAMENTO_TUBULACAO_INSTALADA" : "Vazamento na tubulação instalada pelo fabricante",
+        "FALHA_CALAFETACAO" : "Falha na calafetação",
+        "ENTUPIMENTO_DE_QUEIMADORES" : "Entupimento de queimadores",
+        "FALHAS_NO_FUNCIONAMENTO" : "Falhas no funcionamento",
+        "LIGACAO_DO_GAS" : "Ligação do gás",
+        "OXIDACAO_DE_METAIS" : "Oxidação de metais",
+        "EQUIPAMENTOS_INAD_BAIXA_QUALID" : "Equipamentos inadequados ou de baixa qualidade",
+        "FALHA_DA_FIAÇÃO" : "Falha da fiação",
+        "FALHA_SISTEMA_ALARME" : "Falha no sistema de alarme",
+        "FALHA_SISTEMA_SPRINKLER" : "Falha no sistema de sprinkler",
+        "FALHA_DETECTORES_FUMACA" : "Falha nos detectores de fumaça",
+        "FALHA_NOS_HIDRANTES" : "Falha nos hidrantes",
+        "FALTA_EQUIPAMENTOS_CONF_PROJET" : "Falta de equipamentos conforme projeto",
+        "FALHA_NA_PINTURA" : "Falha na pintura",
+        "ESPECIFICAÇÃO_INADEQUADA" : "Especificação Inadequada",
+        "FALTA_FUNDO_ZARCAO" : "Falta de fundo tipo zarcão",
+        "MANCHADO_LASCADO" : "Manchado/Lascado",
+        "SOLTANDO_PLACAS" : "Soltando placas",
+        "TROCA_PROVENIENTE_INFILTRACAO" : "Troca proveniente de infiltração/vazamento",
+        "FACHADA_SISTEMA_AERADO" : "Fachada com sistema aerado",
+        "SOB_TUTELA_JURIDICO" : "Sob a tutela do Jurídico",
+        "FALHA_CAIMENTO_EMPOCAMENTO" : "Falha de caimento com empoçamento",
+        "FALHA_APLICACAO_ARGAMASSA_POLI" : "Falha na aplicação de argamassa polimérica",
+        "FALHAS_VEDAÇÃO_LUMINARIAS" : "Falhas de vedação em luminárias",
+        "TETO_CAIXA_AGUA_SEM_IMPERMEABI" : "Teto da caixa d'água sem impermeabilização",
+        "IMPEDIDO_TERCEIROS" : "Impedido por terceiros",
+        "FALTA_REGISTRO" : "Falta de Registro",
+        "VALVULA_DANIFICADA" : "Válvula danificada",        
         }       
         
         sub_causa_n2 = {
@@ -544,7 +605,7 @@ class RelatRelacionementoCliente:
         'FALHA_FUNCIONAMENTO_EQUIPAMENT' : 'Falha de funcionamento dos equipamentos',
         'FALHA_MATERIAL' : 'Falha no material',
         'FALHA_NAS_EMENDAS_DAS_PLACAS' : 'Fissura na fita das emendas das placas',
-        'FALHA_NO_REJUNTAMENTO' : 'Falhas no  rejuntamento',
+        'FALHA_NO_REJUNTAMENTO' : 'Falhas no rejuntamento',
         'FALHA_SISTEMA_SUPORTE' : 'Falha no sistema de suporte',
         'FALH_FALT_FIX_TUBOS_CONEXAO_AB' : 'Falhas/Falta de fixação de tubos e conexões (abraçadeiras, tirantes, perfilados, etc.)',
         'FALTANDO_COMPONENTES' : 'Faltando componentes',
@@ -578,7 +639,14 @@ class RelatRelacionementoCliente:
         'TRINC_MANCHADAS_LASCADAS_TONAL' : 'Trincadas/Manchadas/Lascadas/Tonalidade diferente',
         'TUBOS_CONEXOES_TRINC_FURADOS_R' : 'Tubos/Conexões trincados/Furados/Rachados',
         'VASO_SANIT_PROBLEMA_SINF_DEF_F' : 'Vaso sanitário com problema de sifonagem - defeito de fabricação',
-        'VAZAMANTO_INTUPIMENTO_VAV_REG_' : 'Vazamanto/Entupimento em válvula/Registros/torneiras'
+        'VAZAMANTO_INTUPIMENTO_VAV_REG_' : 'Vazamanto/Entupimento em válvula/Registros/torneiras',
+        "FALHA_FIXACAO_FIACAO" : "Falha de fixação da fiação",
+        "FALHA_PLACA" : "Falha na placa",
+        "FALHA_SUPORTE" : "Falha no de suporte",
+        "FALHA_MODULO" : "Falha no módulo",
+        "MODULO_CURTO_CIRCUITO" : "Módulo em curto circuito",
+        "RISCOS_MANCHAS_DIFERENCAS_TONA" : "Riscos/Manchas/diferenças de tonalidade",
+        "DESREGULAGEM_REDUTORAS_PRESSAO" : "Desregulagem de redutoras de pressão/ajustes",        
         }      
         
         tipoRegistro:dict = {
@@ -592,27 +660,27 @@ class RelatRelacionementoCliente:
             "PER_SVR_REGI_ELOGIO" : "Elogio"            
         }
         
-        df["Assunto"] = df["Assunto"].map(assunto, na_action='ignore')
-        df["Categoria"] = df["Categoria"].map(categoria, na_action='ignore')
-        df["Enviar Pesquisa?"] = df["Enviar Pesquisa?"].map(sim_nao, na_action='ignore')
-        df["Chaves Entregues"] = df["Chaves Entregues"].map(sim_nao, na_action='ignore')
-        df["Adquiriu Modificação"] = df["Adquiriu Modificação"].map(sim_nao, na_action='ignore')
-        df["Adquiriu Personalização"] = df["Adquiriu Personalização"].map(sim_nao, na_action='ignore')
-        df["Compareceu à Visita"] = df["Compareceu à Visita"].map(sim_nao, na_action='ignore')
-        df["Transbordo"] = df["Transbordo"].map(sim_nao, na_action='ignore')
-        df["Tipo de Formulário"] = df["Tipo de Formulário"].map(tipo_formulario, na_action='ignore')
-        df["Status da Vistoria"] = df["Status da Vistoria"].map(status, na_action='ignore')
-        df["Status da Revistoria"] = df["Status da Revistoria"].map(status, na_action='ignore')
-        df["Tipo de Entrada"] = df["Tipo de Entrada"].map(tipo_entrada, na_action='ignore')
-        df["Avaliação"] = df["Avaliação"].map(avaliacao, na_action='ignore')
-        df["Procedência"] = df["Procedência"].map(procedencia, na_action='ignore')
-        df["Patologia"] = df["Patologia"].map(patologia, na_action='ignore')
-        df["Causa"] = df["Causa"].map(causa, na_action='ignore')
-        df["SubCausaN1"] = df["SubCausaN1"].map(sub_causa_n1, na_action='ignore')
-        df["SubCausaN2"] = df["SubCausaN2"].map(sub_causa_n2, na_action='ignore')
-        df["Tipo De Registro"] = df["Tipo De Registro"].map(tipoRegistro, na_action='ignore').replace(nb.nan, "Não Preenchido")
-        
-        
+        df["Assunto"] = df["Assunto"].apply(lambda x: assunto[x] if x in assunto else x)
+        df["Categoria"] = df["Categoria"].apply(lambda x: categoria[x] if x in categoria else x)
+        df["Enviar Pesquisa?"] = df["Enviar Pesquisa?"].apply(lambda x: sim_nao[x] if x in sim_nao else x)
+        df["Chaves Entregues"] = df["Chaves Entregues"].apply(lambda x: sim_nao[x] if x in sim_nao else x)
+        df["Adquiriu Modificação"] = df["Adquiriu Modificação"].apply(lambda x: sim_nao[x] if x in sim_nao else x)
+        df["Adquiriu Personalização"] = df["Adquiriu Personalização"].apply(lambda x: sim_nao[x] if x in sim_nao else x)
+        df["Compareceu à Visita"] = df["Compareceu à Visita"].apply(lambda x: sim_nao[x] if x in sim_nao else x)
+        df["Transbordo"] = df["Transbordo"].apply(lambda x: sim_nao[x] if x in sim_nao else x)
+        df["Tipo de Formulário"] = df["Tipo de Formulário"].apply(lambda x: tipo_formulario[x] if x in tipo_formulario else x)
+        df["Status da Vistoria"] = df["Status da Vistoria"].apply(lambda x: status[x] if x in status else x)
+        df["Status da Revistoria"] = df["Status da Revistoria"].apply(lambda x: status[x] if x in status else x)
+        df["Tipo de Entrada"] = df["Tipo de Entrada"].apply(lambda x: tipo_entrada[x] if x in tipo_entrada else x)
+        df["Avaliação"] = df["Avaliação"].apply(lambda x: avaliacao[x] if x in avaliacao else x)
+        df["Procedência"] = df["Procedência"].apply(lambda x: procedencia[x] if x in procedencia else x)
+        df["Patologia"] = df["Patologia"].apply(lambda x: patologia[x] if x in patologia else x)
+        df["Causa"] = df["Causa"].apply(lambda x: causa[x] if x in causa else x)
+        df["SubCausaN1"] = df["SubCausaN1"].apply(lambda x: sub_causa_n1[x] if x in sub_causa_n1 else x)
+        df["SubCausaN2"] = df["SubCausaN2"].apply(lambda x: sub_causa_n2[x] if x in sub_causa_n2 else x)
+        df["Tipo De Registro"] = df["Tipo De Registro"].apply(lambda x: tipoRegistro[x] if x in tipoRegistro else x).replace(nb.nan, "Não Preenchido")
+
+
         return df
 
 if __name__ == "__main__":

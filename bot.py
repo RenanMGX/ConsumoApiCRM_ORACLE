@@ -98,7 +98,9 @@ class Execute:
                 user=maestro.get_credential(label=crd_param, key="user"),
                 password=maestro.get_credential(label=crd_param, key="password"),
                 url=maestro.get_credential(label=crd_param, key="url"),
-                file_save_path_tickets=os.path.join(SharePointFolders(r'RPA - Dados\XRM - Relacionamento Com Cliente\json').value, 'all_tickets.json')
+                file_save_path_tickets=os.path.join(SharePointFolders(r'RPA - Dados\XRM - Relacionamento Com Cliente\json').value, 'all_tickets.json'),
+                maestro=maestro,
+                execution=execution
             )
         
         p.add_processado()

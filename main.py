@@ -11,11 +11,6 @@ from time import sleep
 import os
 
 from botcity.maestro import * # type: ignore
-maestro = BotMaestroSDK.from_sys_args()
-try:
-    execution = maestro.get_execution()
-except:
-    maestro = None
 
 #file_save_path_tickets:str = 
 #file_save_path_empreendimentos:str = 

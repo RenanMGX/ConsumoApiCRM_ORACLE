@@ -14,11 +14,6 @@ from datetime import datetime
 from copy import deepcopy
 
 from botcity.maestro import * # type: ignore
-maestro = BotMaestroSDK.from_sys_args()
-try:
-    execution = maestro.get_execution()
-except:
-    maestro = None
 
 class SpamFilter:
     @property
@@ -130,7 +125,9 @@ class ExecuteAPP:
         user:str, 
         password:str, 
         url:str,
-        file_save_path_tickets:str
+        file_save_path_tickets:str,
+        maestro:BotMaestroSDK|None = None,
+        execution = None
     ):
         
         
@@ -174,11 +171,11 @@ class ExecuteAPP:
                         }
                     )
             print(f"lista dos chamados que foram movidos para Spam {str(lista_movidos)}")
-            sys.exit()
+            return
             
         if not maestro is None:
             maestro.alert(
-                task_id=execution.task_id,
+                task_id=execution.task_id, #type: ignore
                 title="Concluido",
                 message="Automação Concluida mas sem chamados movidos para o Spam",
                 alert_type=AlertType.INFO
