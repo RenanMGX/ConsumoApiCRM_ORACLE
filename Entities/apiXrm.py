@@ -79,9 +79,11 @@ class ApiXrm:
         raise Exception(f"não foi possivel consumir api\n{response.status_code=}\n{response.reason}\n{erro=}")
     
     def _inner_request(self, queue:multiprocessing.Queue, offset:int, limit:int=500, endpoint:Literal["tickets", "empreendimentos", "unidades"] = "tickets"):
-        response = self.request(offset=offset, limit=limit, endpoint=endpoint)
-        #print(response)
-        queue.put(response)
+        try:
+            response = self.request(offset=offset, limit=limit, endpoint=endpoint)
+            queue.put(response)
+        except Exception as error:
+            queue.put(error)
     
     def multi_request(self, *,offset:int=0, pages:int=0, limit:int=500, endpoint:Literal["tickets", "empreendimentos" , "unidades"] = "tickets", num_threads:int=1):
         list_contents:list = []
@@ -113,26 +115,32 @@ class ApiXrm:
                     print(str(process.name), end="; ")
                     process.start()
                     
-                for queue_response in list_queue:# type: ignore
+                for queue_obj in list_queue:# type: ignore
                     
-                    print(str(queue_response), end="; ")
-                    queue_response:requests.models.Response = queue_response.get(timeout=120) # type: ignore
-                    if queue_response.status_code == 200:
-                        queue_json:dict = queue_response.json()
+                    print(str(queue_obj), end="; ")
+                    result = queue_obj.get(timeout=120)
+                    if isinstance(result, Exception):
+                        stop_paginate = True
+                        for process in list_process:
+                            process.kill()
+                            process.join()
+                        raise result
+                    if result.status_code == 200:
+                        queue_json:dict = result.json()
                         
                         if queue_json.get("count") > 0:# type: ignore
                             list_contents += queue_json.get("items")# type: ignore
                         else:
                             stop_paginate = True
                     else:
-                        print(type(queue_response))
-                        print(queue_response.status_code, queue_response.reason)
+                        print(type(result))
+                        print(result.status_code, result.reason)
                         stop_paginate = True
                         for process in list_process:
                             process.kill()
                             process.join()
-                        raise Exception(queue_response.status_code, queue_response.reason)
-                    queue_response.close()
+                        raise Exception(result.status_code, result.reason)
+                    result.close()
 
                 for process in list_process:
                     process.join()
