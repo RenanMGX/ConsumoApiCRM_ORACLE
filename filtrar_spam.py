@@ -61,7 +61,16 @@ class SpamFilter:
             r"Não perca essa oportunidade",
             r"Confirme sua inscrição",
             r"Aproveite agora",
-            r"Grátis por tempo limitado"
+            r"Grátis por tempo limitado",
+            r"Currículo",
+            r"Buscamos equipamentos industriais usados...",
+            r"Vizinho, descubra a atividade mais populares...",
+            r"Notícias que você pode ter perdido",
+            r"Divulgue para milhões de emails - preço de custo",
+            r"O que falta pra você trazer sua loja pra SHEIN...",
+            r"Quer faturar até 3x mais vendendo para 50 milhões...",
+            r"Bradesco Net Empresas",
+            r"Proposta/Orçamento/Cotação",
         ]
         return spam_keywords
     
