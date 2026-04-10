@@ -133,10 +133,13 @@ if __name__ == '__main__':
         ia_response = "Sem Resposta da IA"
         try:
             token = maestro.get_credential(label="GeminiIA-Token-Default", key="token")
+            ia_model = maestro.get_credential(label="GeminiIA-Token-Default", key="model")
+            
             if isinstance(token, str):
                 ia_result = ErrorIA.error_message(
                     token=token,
-                    message=traceback.format_exc()
+                    message=traceback.format_exc(),
+                    model=ia_model
                 )
                 ia_response = ia_result.replace("\n", " ")
         except Exception as e:

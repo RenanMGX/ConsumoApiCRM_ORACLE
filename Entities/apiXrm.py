@@ -68,7 +68,7 @@ class ApiXrm:
         erro = ""
         for _ in range(6):
             try:
-                response = requests.request("GET", url,  auth=(self.__username, self.__password))
+                response = requests.request("GET", url, auth=(self.__username, self.__password), timeout=60)
                 if (response.status_code == 200) or (response.status_code != 504):
                     return response
                 print((response.status_code, f"reiniciando {url}"))
@@ -118,7 +118,7 @@ class ApiXrm:
                 for queue_obj in list_queue:# type: ignore
                     
                     print(str(queue_obj), end="; ")
-                    result = queue_obj.get(timeout=120)
+                    result = queue_obj.get(timeout=480)
                     if isinstance(result, Exception):
                         stop_paginate = True
                         for process in list_process:
